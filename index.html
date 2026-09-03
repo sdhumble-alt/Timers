@@ -312,7 +312,7 @@
       white-space: nowrap;
     }
 
-    /* Main Workspace with Enforced Minimum Canvas Floor */
+    /* Main Workspace */
     main {
       flex: 1;
       display: flex;
@@ -324,8 +324,8 @@
       justify-content: center;
       overflow-x: auto;
       overflow-y: auto;
-      min-width: 680px;  /* Stops text & elements from crushing horizontally */
-      min-height: 520px; /* Stops buttons from colliding vertically */
+      min-width: 680px;
+      min-height: 520px;
     }
 
     .timer-view {
@@ -362,7 +362,7 @@
     }
 
     .timer-digits {
-      font-size: clamp(3.8rem, 11vw, 9.5rem);
+      font-size: clamp(4.5rem, 13vw, 11rem);
       font-weight: 900;
       font-variant-numeric: tabular-nums;
       letter-spacing: 2px;
@@ -623,39 +623,36 @@
       transition: width 0.05s linear;
     }
 
-    /* Visual Timer Viewport (Scaling Protected) */
+    /* Visual Timer Viewport (Vertical Stacking, No Overlap) */
     .visual-stage {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100%;
       width: 100%;
-      gap: 0.5rem;
-      position: relative;
+      height: 100%;
+      gap: 0.75rem;
     }
 
     .pie-wheel {
-      /* Scales proportionally to the display box's actual available canvas */
-      width: min(28vh, 230px, 35vw);
-      height: min(28vh, 230px, 35vw);
-      min-width: 120px;
-      min-height: 120px;
+      width: min(calc(100cqh - 5.5rem), calc(100cqw - 2rem), 380px);
+      height: min(calc(100cqh - 5.5rem), calc(100cqw - 2rem), 380px);
+      aspect-ratio: 1 / 1;
       border-radius: 50%;
-      border: 4px solid var(--border-color);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      border: 5px solid var(--border-color);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
       background: conic-gradient(from 0deg, var(--success) 0% 100%, var(--danger) 100% 100%);
       flex-shrink: 0;
     }
 
     .visual-bar-wrap {
-      width: 88%;
-      max-width: 900px;
-      height: min(10vh, 70px);
-      min-height: 40px;
+      width: 92%;
+      max-width: 950px;
+      height: min(16vh, 120px);
+      min-height: 60px;
       background-color: var(--danger);
       border: 4px solid var(--border-color);
-      border-radius: 20px;
+      border-radius: 24px;
       overflow: hidden;
       position: relative;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
@@ -670,14 +667,22 @@
       transition: width 0.05s linear;
     }
 
+    /* Clean Digits Underneath Wheel or Bar */
     .visual-time-text {
-      font-size: clamp(2.2rem, 5vh, 4rem);
+      font-size: clamp(3rem, 7vh, 5.5rem);
       font-weight: 900;
       font-variant-numeric: tabular-nums;
       letter-spacing: 2px;
       color: var(--text-main);
       line-height: 1;
+      text-align: center;
+      white-space: nowrap;
       flex-shrink: 0;
+    }
+
+    /* Container Queries for Responsive Display Box */
+    #vis-display-box {
+      container-type: size;
     }
 
     /* Modal Overlay */
@@ -952,7 +957,7 @@
         </div>
       </div>
 
-      <div class="display-box">
+      <div class="display-box" id="vis-display-box">
         <div class="visual-stage">
           <div class="pie-wheel" id="pie-wheel"></div>
           <div class="visual-bar-wrap" id="visual-bar-wrap">

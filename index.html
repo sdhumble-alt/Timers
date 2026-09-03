@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timers</title>
+  <style>
+    /* Theme Palettes & Typography */
+    :root {
+      --font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --bg-main: #131722;
+      --bg-card: #1e2433;
+      --bg-input: #2a324b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --accent: #8b5cf6;
+      --border-color: #334155;
+    }
+
+    body[data-theme="chalkboard"] {
+      --font-family: "Chalkboard SE", "Comic Sans MS", "Arial Rounded MT Bold", sans-serif;
+      --bg-main: #1c2e24;
+      --bg-card: #233b2e;
+      --bg-input: #2d4a3b;
+      --text-main: #fcfbf7;
+      --text-muted: #a3bfae;
+      --primary: #facc15;
+      --primary-hover: #eab308;
+      --success: #34d399;
+      --warning: #fb923c;
+      --danger: #f87171;
+      --accent: #fbbf24;
+      --border-color: #3d634f;
+    }
+
+    body[data-theme="neon"] {
+      --font-family: "Courier New", Courier, "Lucida Console", monospace;
+      --bg-main: #0a0a0f;
+      --bg-card: #12121f;
+      --bg-input: #1f1f38;
+      --text-main: #00ffff;
+      --text-muted: #ff77e9;
+      --primary: #00ffff;
+      --primary-hover: #00cccc;
+      --success: #00ff88;
+      --warning: #ffcc00;
+      --danger: #ff0055;
+      --accent: #d946ef;
+      --border-color: #383866;
+    }
+
+    body[data-theme="pastel"] {
+      --font-family: "Quicksand", "Century Gothic", "Segoe UI", sans-serif;
+      --bg-main: #24222f;
+      --bg-card: #302d3e;
+      --bg-input: #413d54;
+      --text-main: #fce7f3;
+      --text-muted: #d8b4fe;
+      --primary: #a78bfa;
+      --primary-hover: #8b5cf6;
+      --success: #6ee7b7;
+      --warning: #fcd34d;
+      --danger: #fda4af;
+      --accent: #c084fc;
+      --border-color: #534e6d;
+    }
+
+    body[data-theme="high-contrast"] {
+      --font-family: Impact, "Arial Black", sans-serif;
+      --bg-main: #000000;
+      --bg-card: #111111;
+      --bg-input: #262626;
+      --text-main: #ffffff;
+      --text-muted: #ffff00;
+      --primary: #ffff00;
+      --primary-hover: #e6e600;
+      --success: #00ff00;
+      --warning: #ffaa00;
+      --danger: #ff1100;
+      --accent: #ffff00;
+      --border-color: #ffffff;
+    }
+
+    body[data-theme="arcade"] {
+      --font-family: "VT323", "Courier New", monospace;
+      --bg-main: #0b0819;
+      --bg-card: #171131;
+      --bg-input: #261c52;
+      --text-main: #fde047;
+      --text-muted: #38bdf8;
+      --primary: #f59e0b;
+      --primary-hover: #d97706;
+      --success: #22c55e;
+      --warning: #eab308;
+      --danger: #ef4444;
+      --accent: #ec4899;
+      --border-color: #4c1d95;
+    }
+
+    body[data-theme="cafe"] {
+      --font-family: "Georgia", "Baskerville", serif;
+      --bg-main: #1f1b18;
+      --bg-card: #2e2620;
+      --bg-input: #42372e;
+      --text-main: #f5ebe0;
+      --text-muted: #d5bdaf;
+      --primary: #ddb892;
+      --primary-hover: #b08968;
+      --success: #7f9c7b;
+      --warning: #d4a373;
+      --danger: #b56576;
+      --accent: #cb997e;
+      --border-color: #58483d;
+    }
+
+    body[data-theme="space"] {
+      --font-family: "Trebuchet MS", "Futura", sans-serif;
+      --bg-main: #060814;
+      --bg-card: #0d122b;
+      --bg-input: #151d45;
+      --text-main: #e0e7ff;
+      --text-muted: #818cf8;
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --success: #06b6d4;
+      --warning: #f59e0b;
+      --danger: #f43f5e;
+      --accent: #a855f7;
+      --border-color: #312e81;
+    }
+
+    body[data-theme="primary-edu"] {
+      --font-family: "Arial Rounded MT Bold", "Trebuchet MS", sans-serif;
+      --bg-main: #f0f4f8;
+      --bg-card: #ffffff;
+      --bg-input: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --success: #16a34a;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --accent: #ea580c;
+      --border-color: #cbd5e1;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      transition: background-color 0.25s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+    }
+
+    /* Sidebar Navigation & Settings */
+    nav {
+      width: 270px;
+      min-width: 270px;
+      background-color: var(--bg-card);
+      border-right: 3px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem 1rem;
+      gap: 0.9rem;
+      overflow-y: auto;
+    }
+
+    .nav-btn {
+      background-color: var(--bg-input);
+      border: 2px solid transparent;
+      color: var(--text-main);
+      padding: 1.15rem 1rem;
+      border-radius: 16px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      text-align: center;
+      justify-content: center;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      filter: brightness(1.15);
+    }
+
+    .nav-btn.active {
+      background-color: var(--primary);
+      color: #ffffff;
+      border-color: var(--text-main);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    }
+
+    body[data-theme="high-contrast"] .nav-btn.active,
+    body[data-theme="chalkboard"] .nav-btn.active {
+      color: #000000;
+    }
+
+    /* Sidebar Settings */
+    .nav-settings {
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+      border-top: 2px solid var(--border-color);
+      padding-top: 1.25rem;
+    }
+
+    .setting-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .setting-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      letter-spacing: 0.05em;
+    }
+
+    .chime-row {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .sidebar-select {
+      flex: 1;
+      background-color: var(--bg-input);
+      border: 2px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.75rem 0.6rem;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      outline: none;
+      min-width: 0;
+    }
+
+    .sidebar-select:focus {
+      border-color: var(--primary);
+    }
+
+    .test-sound-btn {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      border: 2px solid var(--border-color);
+      background-color: var(--bg-input);
+      color: var(--text-main);
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
+    }
+
+    .test-sound-btn:hover {
+      border-color: var(--primary);
+      filter: brightness(1.15);
+    }
+
+    .test-sound-btn:active {
+      transform: scale(0.92);
+      background-color: var(--primary);
+      color: #ffffff;
+    }
+
+    .volume-slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 12px;
+      border-radius: 6px;
+      background: var(--border-color);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--primary);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      cursor: pointer;
+    }
+
+    /* Main Workspace */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 1rem 1.5rem;
+      gap: 0.75rem;
+      position: relative;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .timer-view {
+      display: none;
+      width: 100%;
+      max-width: 1200px;
+      height: 100%;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .timer-view.active {
+      display: flex;
+    }
+
+    /* Display Area */
+    .display-box {
+      background-color: var(--bg-card);
+      border: 2px solid var(--border-color);
+      border-radius: 24px;
+      width: 100%;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 0.75rem 1.5rem;
+    }
+
+    .timer-digits {
+      font-size: clamp(4.5rem, 13vw, 11rem);
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 2px;
+      text-align: center;
+      line-height: 1;
+    }
+
+    /* Steppers */
+    .stepper-deck {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .stepper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 0.4rem;
+      gap: 0.2rem;
+    }
+
+    .stepper-btn {
+      width: 60px;
+      height: 40px;
+      border: none;
+      background-color: var(--bg-card);
+      color: var(--text-main);
+      font-size: 1.3rem;
+      font-weight: 800;
+      font-family: inherit;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stepper-btn:active {
+      background-color: var(--primary);
+      color: #ffffff;
+      transform: scale(0.95);
+    }
+
+    .stepper-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    /* Turn Selector Box */
+    .turn-config-strip {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .turn-selector-card {
+      background: var(--bg-input);
+      border: 2px solid var(--accent);
+      border-radius: 20px;
+      padding: 0.45rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    .turn-selector-info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      justify-content: center;
+      min-width: 130px;
+    }
+
+    .turn-selector-label {
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      text-align: center;
+    }
+
+    .turn-selector-count {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--text-main);
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+      text-align: center;
+      width: 100%;
+    }
+
+    .turn-selector-stepper {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .turn-stepper-btn {
+      width: 54px;
+      height: 38px;
+      border: none;
+      background-color: var(--bg-card);
+      color: var(--text-main);
+      font-size: 1.25rem;
+      font-weight: 800;
+      font-family: inherit;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.15s;
+    }
+
+    .turn-stepper-btn:hover {
+      filter: brightness(1.2);
+    }
+
+    .turn-stepper-btn:active {
+      background-color: var(--accent);
+      color: #ffffff;
+      transform: scale(0.95);
+    }
+
+    /* Control Deck & Buttons */
+    .control-deck {
+      display: flex;
+      gap: 1rem;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .action-btn {
+      flex: 1;
+      max-width: 220px;
+      height: 64px;
+      border-radius: 16px;
+      border: 2px solid transparent;
+      font-size: 1.5rem;
+      font-weight: 900;
+      font-family: inherit;
+      color: #ffffff;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .action-btn:active {
+      transform: translateY(2px);
+    }
+
+    .btn-start { background-color: var(--success); }
+    .btn-pause { background-color: var(--warning); color: #000000; }
+    .btn-reset { background-color: var(--danger); }
+
+    .toggle-pill-btn {
+      height: 64px;
+      padding: 0 1.25rem;
+      border-radius: 16px;
+      border: 2px solid var(--border-color);
+      background-color: var(--bg-input);
+      color: var(--text-muted);
+      font-size: 1rem;
+      font-weight: 800;
+      font-family: inherit;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 140px;
+      transition: all 0.2s ease;
+    }
+
+    .toggle-pill-btn.active {
+      border-color: var(--primary);
+      color: var(--text-main);
+      background-color: var(--bg-card);
+    }
+
+    /* Presets */
+    .preset-multi-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.4rem;
+      width: 100%;
+      max-width: 1050px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 0.5rem 0.75rem;
+      border-radius: 14px;
+      flex-shrink: 0;
+    }
+
+    .preset-btn {
+      background-color: var(--bg-input);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.4rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+
+    .preset-btn:active {
+      background-color: var(--primary);
+      color: #ffffff;
+      transform: scale(0.95);
+    }
+
+    /* Turn Timer Progress */
+    .turn-badge {
+      position: absolute;
+      top: 1rem;
+      left: 1.25rem;
+      background-color: var(--accent);
+      color: #ffffff;
+      padding: 0.5rem 1.4rem;
+      border-radius: 100px;
+      font-size: 1.35rem;
+      font-weight: 900;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 18px;
+      background: var(--border-color);
+      border-radius: 9px;
+      overflow: hidden;
+      margin-top: 1rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 100%;
+      background: var(--accent);
+      transition: width 0.05s linear;
+    }
+
+    /* Visual Timer Viewport */
+    .visual-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      width: 100%;
+      gap: 0.75rem;
+    }
+
+    .pie-wheel {
+      width: min(36vh, 310px, 42vw);
+      height: min(36vh, 310px, 42vw);
+      border-radius: 50%;
+      border: 4px solid var(--border-color);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      background: conic-gradient(from 0deg, var(--success) 0% 100%, var(--danger) 100% 100%);
+      flex-shrink: 0;
+    }
+
+    .visual-bar-wrap {
+      width: 88%;
+      max-width: 900px;
+      height: min(15vh, 100px);
+      background-color: var(--danger);
+      border: 4px solid var(--border-color);
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      display: none;
+    }
+
+    .visual-bar-fill {
+      height: 100%;
+      width: 100%;
+      background-color: var(--success);
+      transition: width 0.05s linear;
+    }
+
+    .visual-time-text {
+      font-size: clamp(3rem, 7.5vh, 5.2rem);
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 2px;
+      color: var(--text-main);
+      line-height: 1.1;
+    }
+  </style>
+</head>
+<body data-theme="default">
+
+  <nav>
+    <button class="nav-btn active" onclick="switchTimer('countdown')">Countdown</button>
+    <button class="nav-btn" onclick="switchTimer('turn')">Turn Timer</button>
+    <button class="nav-btn" onclick="switchTimer('visual')">Visual Timer</button>
+
+    <div class="nav-settings">
+      <div class="setting-group">
+        <div class="setting-label">Theme & Font</div>
+        <select class="sidebar-select" id="theme-select" onchange="updateTheme(this.value)">
+          <option value="default">Default Dark (Modern)</option>
+          <option value="chalkboard">Classroom Chalkboard</option>
+          <option value="neon">Digital Neon</option>
+          <option value="pastel">Warm Pastel</option>
+          <option value="arcade">Retro Arcade (8-Bit)</option>
+          <option value="cafe">Cozy Cafe (Warm Serif)</option>
+          <option value="space">Deep Space (Sci-Fi)</option>
+          <option value="primary-edu">Elementary Primary (Light)</option>
+          <option value="high-contrast">High Contrast (Bold)</option>
+        </select>
+      </div>
+
+      <div class="setting-group">
+        <div class="setting-label">
+          <span>Volume</span>
+          <span id="vol-label">80%</span>
+        </div>
+        <input type="range" class="volume-slider" id="vol-slider" min="0" max="100" value="80" oninput="updateVolume(this.value)">
+      </div>
+
+      <div class="setting-group">
+        <div class="setting-label">Chime Sound</div>
+        <div class="chime-row">
+          <select class="sidebar-select" id="chime-select" onchange="updateChime(this.value)">
+            <option value="bell">Bell Toll</option>
+            <option value="harp">Harp Chime</option>
+            <option value="beep">Digital Beep</option>
+            <option value="marimba">Marimba Chime</option>
+            <option value="arcade">8-Bit Level Up</option>
+            <option value="zen">Zen Singing Bowl</option>
+            <option value="school">School Electric Bell</option>
+            <option value="sonar">Space Radar Ping</option>
+          </select>
+          <button class="test-sound-btn" onclick="playAlertChime()" title="Test Sound">🔊</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section id="view-countdown" class="timer-view active">
+      <div class="stepper-deck">
+        <div class="stepper">
+          <button class="stepper-btn" onclick="stepCountdown(3600)">▲</button>
+          <span class="stepper-label">Hr</span>
+          <button class="stepper-btn" onclick="stepCountdown(-3600)">▼</button>
+        </div>
+        <div class="stepper">
+          <button class="stepper-btn" onclick="stepCountdown(60)">▲</button>
+          <span class="stepper-label">Min</span>
+          <button class="stepper-btn" onclick="stepCountdown(-60)">▼</button>
+        </div>
+        <div class="stepper">
+          <button class="stepper-btn" onclick="stepCountdown(5)">▲</button>
+          <span class="stepper-label">Sec</span>
+          <button class="stepper-btn" onclick="stepCountdown(-5)">▼</button>
+        </div>
+      </div>
+
+      <div class="display-box">
+        <div class="timer-digits" id="cd-display">05:00</div>
+      </div>
+
+      <div class="control-deck">
+        <button class="action-btn btn-start" id="cd-start" onclick="toggleCountdown()">Start</button>
+        <button class="action-btn btn-reset" onclick="resetCountdown()">Reset</button>
+        <button class="toggle-pill-btn" id="cd-ms-toggle" onclick="toggleMs('cd')">Whole Second</button>
+      </div>
+
+      <div class="preset-multi-row" id="cd-presets"></div>
+    </section>
+
+    <section id="view-turn" class="timer-view">
+      <div class="turn-config-strip">
+        <div class="turn-selector-card">
+          <div class="turn-selector-info">
+            <span class="turn-selector-label">Number of Turns</span>
+            <span class="turn-selector-count" id="total-turns-val">4</span>
+          </div>
+          <div class="turn-selector-stepper">
+            <button class="turn-stepper-btn" onclick="adjustTurns(1)">▲</button>
+            <button class="turn-stepper-btn" onclick="adjustTurns(-1)">▼</button>
+          </div>
+        </div>
+
+        <div class="stepper-deck">
+          <div class="stepper">
+            <button class="stepper-btn" onclick="adjustTurnDuration(3600)">▲</button>
+            <span class="stepper-label">Hr</span>
+            <button class="stepper-btn" onclick="adjustTurnDuration(-3600)">▼</button>
+          </div>
+          <div class="stepper">
+            <button class="stepper-btn" onclick="adjustTurnDuration(60)">▲</button>
+            <span class="stepper-label">Min</span>
+            <button class="stepper-btn" onclick="adjustTurnDuration(-60)">▼</button>
+          </div>
+          <div class="stepper">
+            <button class="stepper-btn" onclick="adjustTurnDuration(5)">▲</button>
+            <span class="stepper-label">Sec</span>
+            <button class="stepper-btn" onclick="adjustTurnDuration(-5)">▼</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="display-box">
+        <div class="turn-badge" id="turn-badge">Turn 1 of 4</div>
+        <div class="timer-digits" id="turn-digits">01:00</div>
+        <div class="progress-track">
+          <div class="progress-fill" id="turn-progress"></div>
+        </div>
+      </div>
+
+      <div class="control-deck">
+        <button class="action-btn btn-start" id="turn-start" onclick="toggleTurnTimer()">Start</button>
+        <button class="action-btn btn-reset" onclick="resetTurnTimer()">Reset</button>
+        <button class="toggle-pill-btn" id="turn-ms-toggle" onclick="toggleMs('turn')">Whole Second</button>
+      </div>
+
+      <div class="preset-multi-row" id="turn-presets"></div>
+    </section>
+
+    <section id="view-visual" class="timer-view">
+      <div class="stepper-deck">
+        <div class="stepper">
+          <button class="stepper-btn" onclick="stepVisualDuration(3600)">▲</button>
+          <span class="stepper-label">Hr</span>
+          <button class="stepper-btn" onclick="stepVisualDuration(-3600)">▼</button>
+        </div>
+        <div class="stepper">
+          <button class="stepper-btn" onclick="stepVisualDuration(60)">▲</button>
+          <span class="stepper-label">Min</span>
+          <button class="stepper-btn" onclick="stepVisualDuration(-60)">▼</button>
+        </div>
+        <div class="stepper">
+          <button class="stepper-btn" onclick="stepVisualDuration(10)">▲</button>
+          <span class="stepper-label">Sec</span>
+          <button class="stepper-btn" onclick="stepVisualDuration(-10)">▼</button>
+        </div>
+      </div>
+
+      <div class="display-box">
+        <div class="visual-stage">
+          <div class="pie-wheel" id="pie-wheel"></div>
+          <div class="visual-bar-wrap" id="visual-bar-wrap">
+            <div class="visual-bar-fill" id="visual-bar-fill"></div>
+          </div>
+          <div class="visual-time-text" id="visual-time">03:00</div>
+        </div>
+      </div>
+
+      <div class="control-deck">
+        <button class="action-btn btn-start" id="vis-start" onclick="toggleVisualTimer()">Start</button>
+        <button class="action-btn btn-reset" onclick="resetVisualTimer()">Reset</button>
+        <button class="toggle-pill-btn" id="vis-chart-mode" onclick="toggleChartMode()">Mode: Pie</button>
+        <button class="toggle-pill-btn" id="vis-ms-toggle" onclick="toggleMs('vis')">Whole Second</button>
+      </div>
+
+      <div class="preset-multi-row" id="vis-presets"></div>
+    </section>
+  </main>
+
+  <script>
+    /* Web Worker Heartbeat */
+    const workerBlob = new Blob([`
+      let intervalId = null;
+      self.onmessage = function(e) {
+        if (e.data === 'start') {
+          if (!intervalId) {
+            intervalId = setInterval(() => self.postMessage('tick'), 100);
+          }
+        } else if (e.data === 'stop') {
+          clearInterval(intervalId);
+          intervalId = null;
+        }
+      };
+    `], { type: 'application/javascript' });
+    const timerWorker = new Worker(URL.createObjectURL(workerBlob));
+
+    /* Web Audio Synthesizers */
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const masterGainNode = audioCtx.createGain();
+    masterGainNode.connect(audioCtx.destination);
+
+    let currentVolume = parseFloat(localStorage.getItem('timer_volume') ?? '0.8');
+    let currentChime = localStorage.getItem('timer_chime') ?? 'bell';
+    let currentTheme = localStorage.getItem('timer_theme') ?? 'default';
+
+    function setMasterGain(vol) {
+      masterGainNode.gain.setValueAtTime(vol, audioCtx.currentTime);
+    }
+    setMasterGain(currentVolume);
+
+    function updateVolume(val) {
+      currentVolume = val / 100;
+      setMasterGain(currentVolume);
+      document.getElementById('vol-label').innerText = `${val}%`;
+      localStorage.setItem('timer_volume', currentVolume.toString());
+    }
+
+    function updateChime(val) {
+      currentChime = val;
+      localStorage.setItem('timer_chime', val);
+    }
+
+    function updateTheme(val) {
+      currentTheme = val;
+      document.body.setAttribute('data-theme', val);
+      localStorage.setItem('timer_theme', val);
+      updateVisualUI();
+    }
+
+    /* Sound Synthesizers */
+    function playSoundBell() {
+      for (let i = 0; i < 2; i++) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime + (i * 0.6));
+        gain.gain.setValueAtTime(0.7, audioCtx.currentTime + (i * 0.6));
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + (i * 0.6) + 1.4);
+        osc.connect(gain);
+        gain.connect(masterGainNode);
+        osc.start(audioCtx.currentTime + (i * 0.6));
+        osc.stop(audioCtx.currentTime + (i * 0.6) + 1.4);
+      }
+    }
+
+    function playSoundHarp() {
+      const notes = [440, 554.37, 659.25, 880, 1108.73, 1318.51];
+      notes.forEach((freq, idx) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.08);
+        gain.gain.setValueAtTime(0.6, audioCtx.currentTime + idx * 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + idx * 0.08 + 1.2);
+        osc.connect(gain);
+        gain.connect(masterGainNode);
+        osc.start(audioCtx.currentTime + idx * 0.08);
+        osc.stop(audioCtx.currentTime + idx * 0.08 + 1.2);
+      });
+    }
+
+    function playSoundBeep() {
+      for (let i = 0; i < 3; i++) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(880, audioCtx.currentTime + (i * 0.2));
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime + (i * 0.2));
+        gain.gain.setValueAtTime(0.0001, audioCtx.currentTime + (i * 0.2) + 0.12);
+        osc.connect(gain);
+        gain.connect(masterGainNode);
+        osc.start(audioCtx.currentTime + (i * 0.2));
+        osc.stop(audioCtx.currentTime + (i * 0.2) + 0.12);
+      }
+    }
+
+    function playSoundMarimba() {
+      const notes = [523.25, 659.25, 783.99, 1046.50];
+      notes.forEach((freq, idx) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.12);
+        gain.gain.setValueAtTime(0.7, audioCtx.currentTime + idx * 0.12);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + idx * 0.12 + 0.5);
+        osc.connect(gain);
+        gain.connect(masterGainNode);
+        osc.start(audioCtx.currentTime + idx * 0.12);
+        osc.stop(audioCtx.currentTime + idx * 0.12 + 0.5);
+      });
+    }
+
+    function playSoundArcade() {
+      const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99];
+      notes.forEach((freq, idx) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.06);
+        gain.gain.setValueAtTime(0.35, audioCtx.currentTime + idx * 0.06);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + idx * 0.06 + 0.2);
+        osc.connect(gain);
+        gain.connect(masterGainNode);
+        osc.start(audioCtx.currentTime + idx * 0.06);
+        osc.stop(audioCtx.currentTime + idx * 0.06 + 0.2);
+      });
+    }
+
+    function playSoundZen() {
+      [220, 222, 440].forEach(freq => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.35, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 3.5);
+        osc.connect(gain);
+        gain.connect(masterGainNode);
+        osc.start(audioCtx.currentTime);
+        osc.stop(audioCtx.currentTime + 3.5);
+      });
+    }
+
+    function playSoundSchool() {
+      const startTime = audioCtx.currentTime;
+      for (let i = 0; i < 28; i++) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(800 + (i % 2) * 120, startTime + i * 0.045);
+        gain.gain.setValueAtTime(0.3, startTime + i * 0.045);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + i * 0.045 + 0.04);
+        osc.connect(gain);
+        gain.connect(masterGainNode);
+        osc.start(startTime + i * 0.045);
+        osc.stop(startTime + i * 0.045 + 0.04);
+      }
+    }
+
+    function playSoundSonar() {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1480, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(1100, audioCtx.currentTime + 1.2);
+      gain.gain.setValueAtTime(0.7, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 2.0);
+      osc.connect(gain);
+      gain.connect(masterGainNode);
+      osc.start(audioCtx.currentTime);
+      osc.stop(audioCtx.currentTime + 2.0);
+    }
+
+    function playAlertChime() {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      if (currentChime === 'bell') playSoundBell();
+      else if (currentChime === 'harp') playSoundHarp();
+      else if (currentChime === 'beep') playSoundBeep();
+      else if (currentChime === 'marimba') playSoundMarimba();
+      else if (currentChime === 'arcade') playSoundArcade();
+      else if (currentChime === 'zen') playSoundZen();
+      else if (currentChime === 'school') playSoundSchool();
+      else if (currentChime === 'sonar') playSoundSonar();
+    }
+
+    function checkWorkerActivity() {
+      if (cdRunning || turnRunning || visRunning) {
+        timerWorker.postMessage('start');
+      } else {
+        timerWorker.postMessage('stop');
+      }
+    }
+
+    timerWorker.onmessage = function() {
+      const now = Date.now();
+      if (cdRunning) tickCountdown(now);
+      if (turnRunning) tickTurn(now);
+      if (visRunning) tickVisual(now);
+    };
+
+    function pauseAllTimers() {
+      if (cdRunning) toggleCountdown();
+      if (turnRunning) toggleTurnTimer();
+      if (visRunning) toggleVisualTimer();
+    }
+
+    function switchTimer(timerId) {
+      pauseAllTimers();
+      document.querySelectorAll('.timer-view').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(`view-${timerId}`).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+
+    function formatTime(totalMs, showMs = false) {
+      if (totalMs < 0) totalMs = 0;
+      const totalSec = Math.floor(totalMs / 1000);
+      const h = Math.floor(totalSec / 3600);
+      const m = Math.floor((totalSec % 3600) / 60);
+      const s = Math.floor(totalSec % 60);
+      const cs = Math.floor((totalMs % 1000) / 10);
+
+      let base = (h > 0)
+        ? `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+        : `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+
+      return showMs ? `${base}.${String(cs).padStart(2, '0')}` : base;
+    }
+
+    const presetTimes = [
+      { label: '15s', sec: 15 },
+      { label: '30s', sec: 30 },
+      { label: '45s', sec: 45 },
+      { label: '1m', sec: 60 },
+      { label: '2m', sec: 120 },
+      { label: '3m', sec: 180 },
+      { label: '4m', sec: 240 },
+      { label: '5m', sec: 300 },
+      { label: '10m', sec: 600 },
+      { label: '15m', sec: 900 },
+      { label: '20m', sec: 1200 },
+      { label: '25m', sec: 1500 },
+      { label: '30m', sec: 1800 },
+      { label: '45m', sec: 2700 },
+      { label: '60m', sec: 3600 }
+    ];
+
+    function createPresetButtons(containerId, onSelectCallback) {
+      const container = document.getElementById(containerId);
+      presetTimes.forEach(p => {
+        const btn = document.createElement('button');
+        btn.className = 'preset-btn';
+        btn.innerText = p.label;
+        btn.onclick = () => onSelectCallback(p.sec);
+        container.appendChild(btn);
+      });
+    }
+
+    const msState = {
+      cd: localStorage.getItem('timer_ms_cd') === 'true',
+      turn: localStorage.getItem('timer_ms_turn') === 'true',
+      vis: localStorage.getItem('timer_ms_vis') === 'true'
+    };
+
+    function updateTogglePillText(key) {
+      const btn = document.getElementById(`${key}-ms-toggle`);
+      btn.innerText = msState[key] ? 'Precise' : 'Whole Second';
+      btn.classList.toggle('active', msState[key]);
+    }
+
+    function initMsButtons() {
+      ['cd', 'turn', 'vis'].forEach(key => updateTogglePillText(key));
+    }
+
+    function toggleMs(timerKey) {
+      msState[timerKey] = !msState[timerKey];
+      localStorage.setItem(`timer_ms_${timerKey}`, msState[timerKey]);
+      updateTogglePillText(timerKey);
+
+      if (timerKey === 'cd') updateCdDisplay();
+      if (timerKey === 'turn') updateTurnUI();
+      if (timerKey === 'vis') updateVisualUI();
+    }
+
+    /* 1. Countdown */
+    let cdDurationMs = 300000, cdTimeLeftMs = 300000;
+    let cdRunning = false, cdLastTime = null;
+
+    function updateCdDisplay() {
+      document.getElementById('cd-display').innerText = formatTime(cdTimeLeftMs, msState.cd);
+    }
+    function stepCountdown(deltaSec) {
+      if (cdRunning) return;
+      cdDurationMs = Math.max(5000, cdDurationMs + deltaSec * 1000);
+      cdTimeLeftMs = cdDurationMs;
+      updateCdDisplay();
+    }
+    function loadCountdownPreset(sec) {
+      if (cdRunning) toggleCountdown();
+      cdDurationMs = sec * 1000;
+      cdTimeLeftMs = cdDurationMs;
+      updateCdDisplay();
+      toggleCountdown();
+    }
+    function tickCountdown(now) {
+      if (!cdLastTime) cdLastTime = now;
+      const delta = now - cdLastTime;
+      cdLastTime = now;
+      cdTimeLeftMs -= delta;
+
+      if (cdTimeLeftMs <= 0) {
+        cdTimeLeftMs = 0;
+        cdRunning = false;
+        cdLastTime = null;
+        updateCdDisplay();
+        checkWorkerActivity();
+        playAlertChime();
+        const btn = document.getElementById('cd-start');
+        btn.innerText = 'Start';
+        btn.classList.replace('btn-pause', 'btn-start');
+        return;
+      }
+      updateCdDisplay();
+    }
+    function toggleCountdown() {
+      const btn = document.getElementById('cd-start');
+      if (cdRunning) {
+        cdRunning = false;
+        cdLastTime = null;
+        btn.innerText = 'Resume';
+        btn.classList.replace('btn-pause', 'btn-start');
+      } else {
+        cdRunning = true;
+        cdLastTime = Date.now();
+        btn.innerText = 'Pause';
+        btn.classList.replace('btn-start', 'btn-pause');
+      }
+      checkWorkerActivity();
+    }
+    function resetCountdown() {
+      cdRunning = false;
+      cdLastTime = null;
+      checkWorkerActivity();
+      cdTimeLeftMs = cdDurationMs;
+      updateCdDisplay();
+      const btn = document.getElementById('cd-start');
+      btn.innerText = 'Start';
+      btn.classList.replace('btn-pause', 'btn-start');
+    }
+
+    /* 2. Turn Timer */
+    let totalTurns = 4;
+    let currentTurn = 1, turnDurationMs = 60000, turnTimeLeftMs = 60000;
+    let turnRunning = false, turnLastTime = null;
+
+    function updateTurnUI() {
+      const turnsDisplay = (totalTurns === Infinity) ? '∞' : totalTurns;
+      document.getElementById('total-turns-val').innerText = turnsDisplay;
+      document.getElementById('turn-badge').innerText = `Turn ${currentTurn} of ${turnsDisplay}`;
+      document.getElementById('turn-digits').innerText = formatTime(turnTimeLeftMs, msState.turn);
+      const progress = (turnTimeLeftMs / turnDurationMs) * 100;
+      document.getElementById('turn-progress').style.width = `${Math.max(0, progress)}%`;
+    }
+
+    function adjustTurns(delta) {
+      if (turnRunning) return;
+      if (delta < 0) {
+        if (totalTurns === 1) {
+          totalTurns = Infinity;
+        } else if (totalTurns !== Infinity) {
+          totalTurns = Math.max(1, totalTurns + delta);
+        }
+      } else if (delta > 0) {
+        if (totalTurns === Infinity) {
+          totalTurns = 1;
+        } else {
+          totalTurns += delta;
+        }
+      }
+      currentTurn = 1;
+      updateTurnUI();
+    }
+
+    function adjustTurnDuration(deltaSec) {
+      if (turnRunning) return;
+      turnDurationMs = Math.max(5000, turnDurationMs + deltaSec * 1000);
+      turnTimeLeftMs = turnDurationMs;
+      updateTurnUI();
+    }
+    function loadTurnPreset(sec) {
+      if (turnRunning) toggleTurnTimer();
+      turnDurationMs = sec * 1000;
+      turnTimeLeftMs = turnDurationMs;
+      updateTurnUI();
+    }
+    function tickTurn(now) {
+      if (!turnLastTime) turnLastTime = now;
+      const delta = now - turnLastTime;
+      turnLastTime = now;
+      turnTimeLeftMs -= delta;
+
+      if (turnTimeLeftMs <= 0) {
+        if (totalTurns === Infinity || currentTurn < totalTurns) {
+          playSoundHarp();
+          currentTurn++;
+          turnTimeLeftMs = turnDurationMs;
+          updateTurnUI();
+        } else {
+          turnTimeLeftMs = 0;
+          turnRunning = false;
+          turnLastTime = null;
+          updateTurnUI();
+          checkWorkerActivity();
+          playAlertChime();
+          const btn = document.getElementById('turn-start');
+          btn.innerText = 'Start';
+          btn.classList.replace('btn-pause', 'btn-start');
+        }
+        return;
+      }
+      updateTurnUI();
+    }
+    function toggleTurnTimer() {
+      const btn = document.getElementById('turn-start');
+      if (turnRunning) {
+        turnRunning = false;
+        turnLastTime = null;
+        btn.innerText = 'Resume';
+        btn.classList.replace('btn-pause', 'btn-start');
+      } else {
+        turnRunning = true;
+        turnLastTime = Date.now();
+        btn.innerText = 'Pause';
+        btn.classList.replace('btn-start', 'btn-pause');
+      }
+      checkWorkerActivity();
+    }
+    function resetTurnTimer() {
+      turnRunning = false;
+      turnLastTime = null;
+      checkWorkerActivity();
+      currentTurn = 1;
+      turnTimeLeftMs = turnDurationMs;
+      updateTurnUI();
+      const btn = document.getElementById('turn-start');
+      btn.innerText = 'Start';
+      btn.classList.replace('btn-pause', 'btn-start');
+    }
+
+    /* 3. Visual Timer */
+    let visDurationMs = 180000, visTimeLeftMs = 180000;
+    let visRunning = false, visLastTime = null;
+    let visualMode = localStorage.getItem('timer_visual_mode') ?? 'pie';
+
+    function applyVisualMode() {
+      document.getElementById('vis-chart-mode').innerText = `Mode: ${visualMode === 'pie' ? 'Pie' : 'Bar'}`;
+      document.getElementById('pie-wheel').style.display = (visualMode === 'pie') ? 'block' : 'none';
+      document.getElementById('visual-bar-wrap').style.display = (visualMode === 'bar') ? 'block' : 'none';
+      updateVisualUI();
+    }
+
+    function toggleChartMode() {
+      visualMode = (visualMode === 'pie') ? 'bar' : 'pie';
+      localStorage.setItem('timer_visual_mode', visualMode);
+      applyVisualMode();
+    }
+
+    function updateVisualUI() {
+      const remainingRatio = Math.max(0, Math.min(1, visTimeLeftMs / visDurationMs));
+      const remainingPercent = remainingRatio * 100;
+
+      if (visualMode === 'pie') {
+        const pie = document.getElementById('pie-wheel');
+        pie.style.background = `conic-gradient(from 0deg, var(--success) 0% ${remainingPercent}%, var(--danger) ${remainingPercent}% 100%)`;
+      } else {
+        const bar = document.getElementById('visual-bar-fill');
+        bar.style.width = `${remainingPercent}%`;
+      }
+
+      document.getElementById('visual-time').innerText = formatTime(visTimeLeftMs, msState.vis);
+    }
+    function stepVisualDuration(deltaSec) {
+      if (visRunning) return;
+      visDurationMs = Math.max(10000, visDurationMs + deltaSec * 1000);
+      visTimeLeftMs = visDurationMs;
+      updateVisualUI();
+    }
+    function loadVisualPreset(sec) {
+      if (visRunning) toggleVisualTimer();
+      visDurationMs = sec * 1000;
+      visTimeLeftMs = visDurationMs;
+      updateVisualUI();
+      toggleVisualTimer();
+    }
+    function tickVisual(now) {
+      if (!visLastTime) visLastTime = now;
+      const delta = now - visLastTime;
+      visLastTime = now;
+      visTimeLeftMs -= delta;
+
+      if (visTimeLeftMs <= 0) {
+        visTimeLeftMs = 0;
+        visRunning = false;
+        visLastTime = null;
+        updateVisualUI();
+        checkWorkerActivity();
+        playAlertChime();
+        const btn = document.getElementById('vis-start');
+        btn.innerText = 'Start';
+        btn.classList.replace('btn-pause', 'btn-start');
+        return;
+      }
+      updateVisualUI();
+    }
+    function toggleVisualTimer() {
+      const btn = document.getElementById('vis-start');
+      if (visRunning) {
+        visRunning = false;
+        visLastTime = null;
+        btn.innerText = 'Resume';
+        btn.classList.replace('btn-pause', 'btn-start');
+      } else {
+        visRunning = true;
+        visLastTime = Date.now();
+        btn.innerText = 'Pause';
+        btn.classList.replace('btn-start', 'btn-pause');
+      }
+      checkWorkerActivity();
+    }
+    function resetVisualTimer() {
+      visRunning = false;
+      visLastTime = null;
+      checkWorkerActivity();
+      visTimeLeftMs = visDurationMs;
+      updateVisualUI();
+      const btn = document.getElementById('vis-start');
+      btn.innerText = 'Start';
+      btn.classList.replace('btn-pause', 'btn-start');
+    }
+
+    /* Visibility Catchup */
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        if (cdRunning) updateCdDisplay();
+        if (turnRunning) updateTurnUI();
+        if (visRunning) updateVisualUI();
+      }
+    });
+
+    /* Hydrate Preferences & Init */
+    document.getElementById('vol-slider').value = Math.round(currentVolume * 100);
+    document.getElementById('vol-label').innerText = `${Math.round(currentVolume * 100)}%`;
+    document.getElementById('chime-select').value = currentChime;
+    document.getElementById('theme-select').value = currentTheme;
+    document.body.setAttribute('data-theme', currentTheme);
+
+    initMsButtons();
+    applyVisualMode();
+
+    createPresetButtons('cd-presets', loadCountdownPreset);
+    createPresetButtons('turn-presets', loadTurnPreset);
+    createPresetButtons('vis-presets', loadVisualPreset);
+
+    updateTurnUI();
+    updateVisualUI();
+  </script>
+</body>
+</html>

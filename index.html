@@ -165,12 +165,42 @@
       color: var(--text-main);
       width: 100vw;
       height: 100vh;
-      overflow-x: auto;
-      overflow-y: auto;
+      overflow: hidden;
       display: flex;
+      position: relative;
     }
 
-    /* Sidebar Navigation & Settings */
+    /* Floating Sidebar Toggle Button */
+    .sidebar-toggle-btn {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      z-index: 100;
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background-color: var(--bg-card);
+      border: 2px solid var(--border-color);
+      color: var(--text-main);
+      font-size: 1.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+      transition: all 0.2s ease;
+    }
+
+    .sidebar-toggle-btn:hover {
+      border-color: var(--primary);
+      filter: brightness(1.15);
+    }
+
+    .sidebar-toggle-btn:active {
+      transform: scale(0.92);
+    }
+
+    /* Collapsible Sidebar */
     nav {
       width: 270px;
       min-width: 270px;
@@ -178,10 +208,33 @@
       border-right: 3px solid var(--border-color);
       display: flex;
       flex-direction: column;
-      padding: 1.5rem 1rem;
+      padding: 4.25rem 1rem 1.5rem 1rem;
       gap: 0.9rem;
       overflow-y: auto;
       flex-shrink: 0;
+      transition: margin-left 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 50;
+    }
+
+    /* Manual Collapse */
+    nav.collapsed {
+      margin-left: -270px !important;
+    }
+
+    /* Automatic Responsive Collapse below 900px */
+    @media (max-width: 900px) {
+      nav {
+        margin-left: -270px;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        box-shadow: 8px 0 24px rgba(0, 0, 0, 0.6);
+      }
+      /* If user explicitly opens it while screen is small */
+      nav.expanded-mobile {
+        margin-left: 0 !important;
+      }
     }
 
     .nav-btn {
@@ -324,8 +377,8 @@
       justify-content: center;
       overflow-x: auto;
       overflow-y: auto;
-      min-width: 680px;
-      min-height: 520px;
+      min-width: 0;
+      height: 100vh;
     }
 
     .timer-view {
@@ -333,7 +386,7 @@
       width: 100%;
       max-width: 1200px;
       height: 100%;
-      min-height: 500px;
+      min-height: 480px;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
@@ -351,7 +404,7 @@
       border-radius: 24px;
       width: 100%;
       flex: 1;
-      min-height: 220px;
+      min-height: 200px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -362,7 +415,7 @@
     }
 
     .timer-digits {
-      font-size: clamp(4.5rem, 13vw, 11rem);
+      font-size: clamp(4rem, 13vw, 11rem);
       font-weight: 900;
       font-variant-numeric: tabular-nums;
       letter-spacing: 2px;
@@ -623,7 +676,7 @@
       transition: width 0.05s linear;
     }
 
-    /* Visual Timer Viewport (Vertical Stacking, No Overlap) */
+    /* Visual Timer Viewport */
     .visual-stage {
       display: flex;
       flex-direction: column;
@@ -667,7 +720,6 @@
       transition: width 0.05s linear;
     }
 
-    /* Clean Digits Underneath Wheel or Bar */
     .visual-time-text {
       font-size: clamp(3rem, 7vh, 5.5rem);
       font-weight: 900;
@@ -680,7 +732,6 @@
       flex-shrink: 0;
     }
 
-    /* Container Queries for Responsive Display Box */
     #vis-display-box {
       container-type: size;
     }
@@ -820,7 +871,10 @@
 </head>
 <body data-theme="default">
 
-  <nav>
+  <!-- Floating Toggle Button for Sidebar -->
+  <button class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Toggle Sidebar">☰</button>
+
+  <nav id="app-sidebar">
     <button class="nav-btn active" onclick="switchTimer('countdown')">Countdown</button>
     <button class="nav-btn" onclick="switchTimer('turn')">Turn Timer</button>
     <button class="nav-btn" onclick="switchTimer('visual')">Visual Timer</button>
@@ -857,6 +911,7 @@
   </nav>
 
   <main>
+    <!-- Countdown View -->
     <section id="view-countdown" class="timer-view active">
       <div class="stepper-deck">
         <div class="stepper">
@@ -889,6 +944,7 @@
       <div class="preset-multi-row" id="cd-presets"></div>
     </section>
 
+    <!-- Turn Timer View -->
     <section id="view-turn" class="timer-view">
       <div class="turn-config-strip">
         <div class="turn-selector-card">
@@ -938,6 +994,7 @@
       <div class="preset-multi-row" id="turn-presets"></div>
     </section>
 
+    <!-- Visual Timer View -->
     <section id="view-visual" class="timer-view">
       <div class="stepper-deck">
         <div class="stepper">
@@ -978,6 +1035,7 @@
     </section>
   </main>
 
+  <!-- Theme Selection Modal Overlay -->
   <div class="modal-backdrop" id="theme-modal" onclick="closeModalOnBackdrop(event, 'theme-modal')">
     <div class="modal-dialog">
       <div class="modal-header">
@@ -988,6 +1046,7 @@
     </div>
   </div>
 
+  <!-- Sound Selection Modal Overlay -->
   <div class="modal-backdrop" id="chime-modal" onclick="closeModalOnBackdrop(event, 'chime-modal')">
     <div class="modal-dialog">
       <div class="modal-header">
@@ -1014,6 +1073,24 @@
       };
     `], { type: 'application/javascript' });
     const timerWorker = new Worker(URL.createObjectURL(workerBlob));
+
+    /* Sidebar Drawer Controller */
+    const sidebar = document.getElementById('app-sidebar');
+
+    function toggleSidebar() {
+      if (window.innerWidth <= 900) {
+        sidebar.classList.toggle('expanded-mobile');
+      } else {
+        sidebar.classList.toggle('collapsed');
+      }
+    }
+
+    // Auto-close overlay drawer on mobile when switching timers
+    function handleMobileNavClick() {
+      if (window.innerWidth <= 900) {
+        sidebar.classList.remove('expanded-mobile');
+      }
+    }
 
     /* Enhanced Web Audio Graph with Compressor & Pre-Gain Stage */
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1322,6 +1399,7 @@
       document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
       document.getElementById(`view-${timerId}`).classList.add('active');
       event.currentTarget.classList.add('active');
+      handleMobileNavClick();
     }
 
     function formatTime(totalMs, showMs = false) {

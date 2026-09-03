@@ -811,8 +811,16 @@
       <div class="setting-group">
         <div class="setting-label">Theme & Font</div>
         <button class="modal-trigger-btn" onclick="openThemeModal()">
-          <span>🎨 Theme</span>
+          <span>Theme</span>
           <span class="modal-trigger-val" id="theme-btn-val">Default Dark</span>
+        </button>
+      </div>
+
+      <div class="setting-group">
+        <div class="setting-label">Chime Sound</div>
+        <button class="modal-trigger-btn" onclick="openChimeModal()">
+          <span>Sound</span>
+          <span class="modal-trigger-val" id="chime-btn-val">Bell Toll</span>
         </button>
       </div>
 
@@ -822,14 +830,6 @@
           <span id="vol-label">80%</span>
         </div>
         <input type="range" class="volume-slider" id="vol-slider" min="0" max="100" value="80" oninput="updateVolume(this.value)">
-      </div>
-
-      <div class="setting-group">
-        <div class="setting-label">Chime Sound</div>
-        <button class="modal-trigger-btn" onclick="openChimeModal()">
-          <span>🔔 Sound</span>
-          <span class="modal-trigger-val" id="chime-btn-val">Bell Toll</span>
-        </button>
       </div>
 
       <div class="app-meta-footer">
@@ -1111,7 +1111,7 @@
         tile.innerHTML = `
           <div class="touch-tile-name">${c.name}</div>
           <div class="touch-tile-desc">${c.desc}</div>
-          <button class="touch-tile-preview" onclick="previewSound('${c.id}')">🔊 Test</button>
+          <button class="touch-tile-preview" onclick="previewSound('${c.id}')">Test</button>
         `;
         grid.appendChild(tile);
       });
@@ -1335,4 +1335,333 @@
       { label: '20m', sec: 1200 },
       { label: '25m', sec: 1500 },
       { label: '30m', sec: 1800 },
-      { label: '45m', sec: 2700
+      { label: '45m', sec: 2700 },
+      { label: '60m', sec: 3600 }
+    ];
+
+    function createPresetButtons(containerId, onSelectCallback) {
+      const container = document.getElementById(containerId);
+      presetTimes.forEach(p => {
+        const btn = document.createElement('button');
+        btn.className = 'preset-btn';
+        btn.innerText = p.label;
+        btn.onclick = () => onSelectCallback(p.sec);
+        container.appendChild(btn);
+      });
+    }
+
+    const msState = {
+      cd: localStorage.getItem('timer_ms_cd') === 'true',
+      turn: localStorage.getItem('timer_ms_turn') === 'true',
+      vis: localStorage.getItem('timer_ms_vis') === 'true'
+    };
+
+    function updateTogglePillText(key) {
+      const btn = document.getElementById(`${key}-ms-toggle`);
+      btn.innerText = msState[key] ? 'Precise' : 'Whole Second';
+      btn.classList.toggle('active', msState[key]);
+    }
+
+    function initMsButtons() {
+      ['cd', 'turn', 'vis'].forEach(key => updateTogglePillText(key));
+    }
+
+    function toggleMs(timerKey) {
+      msState[timerKey] = !msState[timerKey];
+      localStorage.setItem(`timer_ms_${timerKey}`, msState[timerKey]);
+      updateTogglePillText(timerKey);
+
+      if (timerKey === 'cd') updateCdDisplay();
+      if (timerKey === 'turn') updateTurnUI();
+      if (timerKey === 'vis') updateVisualUI();
+    }
+
+    /* 1. Countdown */
+    let cdDurationMs = 300000, cdTimeLeftMs = 300000;
+    let cdRunning = false, cdLastTime = null;
+
+    function updateCdDisplay() {
+      document.getElementById('cd-display').innerText = formatTime(cdTimeLeftMs, msState.cd);
+    }
+    function stepCountdown(deltaSec) {
+      if (cdRunning) return;
+      cdDurationMs = Math.max(5000, cdDurationMs + deltaSec * 1000);
+      cdTimeLeftMs = cdDurationMs;
+      updateCdDisplay();
+    }
+    function loadCountdownPreset(sec) {
+      if (cdRunning) toggleCountdown();
+      cdDurationMs = sec * 1000;
+      cdTimeLeftMs = cdDurationMs;
+      updateCdDisplay();
+      toggleCountdown();
+    }
+    function tickCountdown(now) {
+      if (!cdLastTime) cdLastTime = now;
+      const delta = now - cdLastTime;
+      cdLastTime = now;
+      cdTimeLeftMs -= delta;
+
+      if (cdTimeLeftMs <= 0) {
+        cdTimeLeftMs = 0;
+        cdRunning = false;
+        cdLastTime = null;
+        updateCdDisplay();
+        checkWorkerActivity();
+        playAlertChime();
+        const btn = document.getElementById('cd-start');
+        btn.innerText = 'Start';
+        btn.classList.replace('btn-pause', 'btn-start');
+        return;
+      }
+      updateCdDisplay();
+    }
+    function toggleCountdown() {
+      const btn = document.getElementById('cd-start');
+      if (cdRunning) {
+        cdRunning = false;
+        cdLastTime = null;
+        btn.innerText = 'Resume';
+        btn.classList.replace('btn-pause', 'btn-start');
+      } else {
+        cdRunning = true;
+        cdLastTime = Date.now();
+        btn.innerText = 'Pause';
+        btn.classList.replace('btn-start', 'btn-pause');
+      }
+      checkWorkerActivity();
+    }
+    function resetCountdown() {
+      cdRunning = false;
+      cdLastTime = null;
+      checkWorkerActivity();
+      cdTimeLeftMs = cdDurationMs;
+      updateCdDisplay();
+      const btn = document.getElementById('cd-start');
+      btn.innerText = 'Start';
+      btn.classList.replace('btn-pause', 'btn-start');
+    }
+
+    /* 2. Turn Timer */
+    let totalTurns = 4;
+    let currentTurn = 1, turnDurationMs = 60000, turnTimeLeftMs = 60000;
+    let turnRunning = false, turnLastTime = null;
+
+    function updateTurnUI() {
+      const turnsDisplay = (totalTurns === Infinity) ? '∞' : totalTurns;
+      document.getElementById('total-turns-val').innerText = turnsDisplay;
+      document.getElementById('turn-badge').innerText = `Turn ${currentTurn} of ${turnsDisplay}`;
+      document.getElementById('turn-digits').innerText = formatTime(turnTimeLeftMs, msState.turn);
+      const progress = (turnTimeLeftMs / turnDurationMs) * 100;
+      document.getElementById('turn-progress').style.width = `${Math.max(0, progress)}%`;
+    }
+
+    function adjustTurns(delta) {
+      if (turnRunning) return;
+      if (delta < 0) {
+        if (totalTurns === 1) {
+          totalTurns = Infinity;
+        } else if (totalTurns !== Infinity) {
+          totalTurns = Math.max(1, totalTurns + delta);
+        }
+      } else if (delta > 0) {
+        if (totalTurns === Infinity) {
+          totalTurns = 1;
+        } else {
+          totalTurns += delta;
+        }
+      }
+      currentTurn = 1;
+      updateTurnUI();
+    }
+
+    function adjustTurnDuration(deltaSec) {
+      if (turnRunning) return;
+      turnDurationMs = Math.max(5000, turnDurationMs + deltaSec * 1000);
+      turnTimeLeftMs = turnDurationMs;
+      updateTurnUI();
+    }
+    function loadTurnPreset(sec) {
+      if (turnRunning) toggleTurnTimer();
+      turnDurationMs = sec * 1000;
+      turnTimeLeftMs = turnDurationMs;
+      updateTurnUI();
+    }
+    function tickTurn(now) {
+      if (!turnLastTime) turnLastTime = now;
+      const delta = now - turnLastTime;
+      turnLastTime = now;
+      turnTimeLeftMs -= delta;
+
+      if (turnTimeLeftMs <= 0) {
+        if (totalTurns === Infinity || currentTurn < totalTurns) {
+          playSoundHarp();
+          currentTurn++;
+          turnTimeLeftMs = turnDurationMs;
+          updateTurnUI();
+        } else {
+          turnTimeLeftMs = 0;
+          turnRunning = false;
+          turnLastTime = null;
+          updateTurnUI();
+          checkWorkerActivity();
+          playAlertChime();
+          const btn = document.getElementById('turn-start');
+          btn.innerText = 'Start';
+          btn.classList.replace('btn-pause', 'btn-start');
+        }
+        return;
+      }
+      updateTurnUI();
+    }
+    function toggleTurnTimer() {
+      const btn = document.getElementById('turn-start');
+      if (turnRunning) {
+        turnRunning = false;
+        turnLastTime = null;
+        btn.innerText = 'Resume';
+        btn.classList.replace('btn-pause', 'btn-start');
+      } else {
+        turnRunning = true;
+        turnLastTime = Date.now();
+        btn.innerText = 'Pause';
+        btn.classList.replace('btn-start', 'btn-pause');
+      }
+      checkWorkerActivity();
+    }
+    function resetTurnTimer() {
+      turnRunning = false;
+      turnLastTime = null;
+      checkWorkerActivity();
+      currentTurn = 1;
+      turnTimeLeftMs = turnDurationMs;
+      updateTurnUI();
+      const btn = document.getElementById('turn-start');
+      btn.innerText = 'Start';
+      btn.classList.replace('btn-pause', 'btn-start');
+    }
+
+    /* 3. Visual Timer */
+    let visDurationMs = 180000, visTimeLeftMs = 180000;
+    let visRunning = false, visLastTime = null;
+    let visualMode = localStorage.getItem('timer_visual_mode') ?? 'pie';
+
+    function applyVisualMode() {
+      document.getElementById('vis-chart-mode').innerText = `Mode: ${visualMode === 'pie' ? 'Pie' : 'Bar'}`;
+      document.getElementById('pie-wheel').style.display = (visualMode === 'pie') ? 'block' : 'none';
+      document.getElementById('visual-bar-wrap').style.display = (visualMode === 'bar') ? 'block' : 'none';
+      updateVisualUI();
+    }
+
+    function toggleChartMode() {
+      visualMode = (visualMode === 'pie') ? 'bar' : 'pie';
+      localStorage.setItem('timer_visual_mode', visualMode);
+      applyVisualMode();
+    }
+
+    function updateVisualUI() {
+      const remainingRatio = Math.max(0, Math.min(1, visTimeLeftMs / visDurationMs));
+      const remainingPercent = remainingRatio * 100;
+
+      if (visualMode === 'pie') {
+        const pie = document.getElementById('pie-wheel');
+        pie.style.background = `conic-gradient(from 0deg, var(--success) 0% ${remainingPercent}%, var(--danger) ${remainingPercent}% 100%)`;
+      } else {
+        const bar = document.getElementById('visual-bar-fill');
+        bar.style.width = `${remainingPercent}%`;
+      }
+
+      document.getElementById('visual-time').innerText = formatTime(visTimeLeftMs, msState.vis);
+    }
+    function stepVisualDuration(deltaSec) {
+      if (visRunning) return;
+      visDurationMs = Math.max(10000, visDurationMs + deltaSec * 1000);
+      visTimeLeftMs = visDurationMs;
+      updateVisualUI();
+    }
+    function loadVisualPreset(sec) {
+      if (visRunning) toggleVisualTimer();
+      visDurationMs = sec * 1000;
+      visTimeLeftMs = visDurationMs;
+      updateVisualUI();
+      toggleVisualTimer();
+    }
+    function tickVisual(now) {
+      if (!visLastTime) visLastTime = now;
+      const delta = now - visLastTime;
+      visLastTime = now;
+      visTimeLeftMs -= delta;
+
+      if (visTimeLeftMs <= 0) {
+        visTimeLeftMs = 0;
+        visRunning = false;
+        visLastTime = null;
+        updateVisualUI();
+        checkWorkerActivity();
+        playAlertChime();
+        const btn = document.getElementById('vis-start');
+        btn.innerText = 'Start';
+        btn.classList.replace('btn-pause', 'btn-start');
+        return;
+      }
+      updateVisualUI();
+    }
+    function toggleVisualTimer() {
+      const btn = document.getElementById('vis-start');
+      if (visRunning) {
+        visRunning = false;
+        visLastTime = null;
+        btn.innerText = 'Resume';
+        btn.classList.replace('btn-pause', 'btn-start');
+      } else {
+        visRunning = true;
+        visLastTime = Date.now();
+        btn.innerText = 'Pause';
+        btn.classList.replace('btn-start', 'btn-pause');
+      }
+      checkWorkerActivity();
+    }
+    function resetVisualTimer() {
+      visRunning = false;
+      visLastTime = null;
+      checkWorkerActivity();
+      visTimeLeftMs = visDurationMs;
+      updateVisualUI();
+      const btn = document.getElementById('vis-start');
+      btn.innerText = 'Start';
+      btn.classList.replace('btn-pause', 'btn-start');
+    }
+
+    /* Visibility Catchup */
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        if (cdRunning) updateCdDisplay();
+        if (turnRunning) updateTurnUI();
+        if (visRunning) updateVisualUI();
+      }
+    });
+
+    /* Hydrate Preferences & Init */
+    document.getElementById('vol-slider').value = Math.round(currentVolume * 100);
+    document.getElementById('vol-label').innerText = `${Math.round(currentVolume * 100)}%`;
+
+    const initialThemeMatch = themesList.find(t => t.id === currentTheme);
+    if (initialThemeMatch) document.getElementById('theme-btn-val').innerText = initialThemeMatch.name;
+
+    const initialChimeMatch = chimesList.find(c => c.id === currentChime);
+    if (initialChimeMatch) document.getElementById('chime-btn-val').innerText = initialChimeMatch.name;
+
+    document.body.setAttribute('data-theme', currentTheme);
+
+    initMsButtons();
+    applyVisualMode();
+
+    createPresetButtons('cd-presets', loadCountdownPreset);
+    createPresetButtons('turn-presets', loadTurnPreset);
+    createPresetButtons('vis-presets', loadVisualPreset);
+
+    updateTurnUI();
+    updateVisualUI();
+  </script>
+</body>
+</html>

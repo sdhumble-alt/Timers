@@ -240,56 +240,41 @@
       letter-spacing: 0.05em;
     }
 
-    .chime-row {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-    }
-
-    .sidebar-select {
-      flex: 1;
+    /* Touch Friendly Trigger Buttons */
+    .modal-trigger-btn {
       background-color: var(--bg-input);
       border: 2px solid var(--border-color);
       color: var(--text-main);
-      padding: 0.75rem 0.6rem;
-      border-radius: 12px;
-      font-size: 0.95rem;
+      padding: 0.85rem 0.9rem;
+      border-radius: 14px;
+      font-size: 1rem;
       font-weight: 700;
       font-family: inherit;
       cursor: pointer;
-      outline: none;
-      min-width: 0;
-    }
-
-    .sidebar-select:focus {
-      border-color: var(--primary);
-    }
-
-    .test-sound-btn {
-      width: 46px;
-      height: 46px;
-      border-radius: 12px;
-      border: 2px solid var(--border-color);
-      background-color: var(--bg-input);
-      color: var(--text-main);
-      font-size: 1.3rem;
       display: flex;
       align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      flex-shrink: 0;
-      transition: all 0.15s ease;
+      justify-content: space-between;
+      text-align: left;
+      gap: 0.5rem;
     }
 
-    .test-sound-btn:hover {
+    .modal-trigger-btn:hover {
       border-color: var(--primary);
-      filter: brightness(1.15);
+      filter: brightness(1.1);
     }
 
-    .test-sound-btn:active {
-      transform: scale(0.92);
-      background-color: var(--primary);
-      color: #ffffff;
+    .modal-trigger-btn:active {
+      transform: scale(0.97);
+    }
+
+    .modal-trigger-val {
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 110px;
     }
 
     .volume-slider {
@@ -310,6 +295,21 @@
       background: var(--primary);
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
       cursor: pointer;
+    }
+
+    /* Compact Sidebar Version & Revision Footer */
+    .app-meta-footer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding-top: 0.25rem;
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      opacity: 0.65;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
     }
 
     /* Main Workspace */
@@ -665,6 +665,139 @@
       color: var(--text-main);
       line-height: 1.1;
     }
+
+    /* Modal Overlay */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-dialog {
+      background-color: var(--bg-card);
+      border: 3px solid var(--border-color);
+      border-radius: 28px;
+      width: 100%;
+      max-width: 800px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 1.5rem 2rem;
+      border-bottom: 2px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .modal-title {
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: var(--text-main);
+    }
+
+    .modal-close-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      border: 2px solid var(--border-color);
+      background-color: var(--bg-input);
+      color: var(--text-main);
+      font-size: 1.6rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-close-btn:active {
+      transform: scale(0.92);
+    }
+
+    .modal-body {
+      padding: 1.5rem 2rem;
+      overflow-y: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    /* Selection Tiles Inside Modal */
+    .touch-tile {
+      background-color: var(--bg-input);
+      border: 3px solid var(--border-color);
+      border-radius: 18px;
+      padding: 1.25rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .touch-tile:hover {
+      border-color: var(--primary);
+      filter: brightness(1.1);
+    }
+
+    .touch-tile.selected {
+      border-color: var(--primary);
+      background-color: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    body[data-theme="high-contrast"] .touch-tile.selected,
+    body[data-theme="chalkboard"] .touch-tile.selected {
+      color: #000000;
+    }
+
+    .touch-tile-name {
+      font-size: 1.15rem;
+      font-weight: 800;
+    }
+
+    .touch-tile-desc {
+      font-size: 0.85rem;
+      opacity: 0.8;
+      font-weight: 600;
+    }
+
+    .touch-tile-preview {
+      margin-top: 0.5rem;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: inherit;
+      padding: 0.4rem 0.85rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .touch-tile-preview:active {
+      transform: scale(0.95);
+    }
   </style>
 </head>
 <body data-theme="default">
@@ -677,17 +810,10 @@
     <div class="nav-settings">
       <div class="setting-group">
         <div class="setting-label">Theme & Font</div>
-        <select class="sidebar-select" id="theme-select" onchange="updateTheme(this.value)">
-          <option value="default">Default Dark (Modern)</option>
-          <option value="chalkboard">Classroom Chalkboard</option>
-          <option value="neon">Digital Neon</option>
-          <option value="pastel">Warm Pastel</option>
-          <option value="arcade">Retro Arcade (8-Bit)</option>
-          <option value="cafe">Cozy Cafe (Warm Serif)</option>
-          <option value="space">Deep Space (Sci-Fi)</option>
-          <option value="primary-edu">Elementary Primary (Light)</option>
-          <option value="high-contrast">High Contrast (Bold)</option>
-        </select>
+        <button class="modal-trigger-btn" onclick="openThemeModal()">
+          <span>🎨 Theme</span>
+          <span class="modal-trigger-val" id="theme-btn-val">Default Dark</span>
+        </button>
       </div>
 
       <div class="setting-group">
@@ -700,19 +826,14 @@
 
       <div class="setting-group">
         <div class="setting-label">Chime Sound</div>
-        <div class="chime-row">
-          <select class="sidebar-select" id="chime-select" onchange="updateChime(this.value)">
-            <option value="bell">Bell Toll</option>
-            <option value="harp">Harp Chime</option>
-            <option value="beep">Digital Beep</option>
-            <option value="marimba">Marimba Chime</option>
-            <option value="arcade">8-Bit Level Up</option>
-            <option value="zen">Zen Singing Bowl</option>
-            <option value="school">School Electric Bell</option>
-            <option value="sonar">Space Radar Ping</option>
-          </select>
-          <button class="test-sound-btn" onclick="playAlertChime()" title="Test Sound">🔊</button>
-        </div>
+        <button class="modal-trigger-btn" onclick="openChimeModal()">
+          <span>🔔 Sound</span>
+          <span class="modal-trigger-val" id="chime-btn-val">Bell Toll</span>
+        </button>
+      </div>
+
+      <div class="app-meta-footer">
+        <span>V1.0.0 (09-06-2026)</span>
       </div>
     </div>
   </nav>
@@ -839,6 +960,26 @@
     </section>
   </main>
 
+  <div class="modal-backdrop" id="theme-modal" onclick="closeModalOnBackdrop(event, 'theme-modal')">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title">Choose Theme & Font</div>
+        <button class="modal-close-btn" onclick="closeModal('theme-modal')">✕</button>
+      </div>
+      <div class="modal-body" id="theme-tile-grid"></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="chime-modal" onclick="closeModalOnBackdrop(event, 'chime-modal')">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title">Choose Chime Sound</div>
+        <button class="modal-close-btn" onclick="closeModal('chime-modal')">✕</button>
+      </div>
+      <div class="modal-body" id="chime-tile-grid"></div>
+    </div>
+  </div>
+
   <script>
     /* Web Worker Heartbeat */
     const workerBlob = new Blob([`
@@ -856,10 +997,24 @@
     `], { type: 'application/javascript' });
     const timerWorker = new Worker(URL.createObjectURL(workerBlob));
 
-    /* Web Audio Synthesizers */
+    /* Enhanced Web Audio Graph with Compressor & Pre-Gain Stage */
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    const preGainNode = audioCtx.createGain();
+    preGainNode.gain.setValueAtTime(2.5, audioCtx.currentTime);
+
+    const compressorNode = audioCtx.createDynamicsCompressor();
+    compressorNode.threshold.setValueAtTime(-12, audioCtx.currentTime);
+    compressorNode.knee.setValueAtTime(8, audioCtx.currentTime);
+    compressorNode.ratio.setValueAtTime(12, audioCtx.currentTime);
+    compressorNode.attack.setValueAtTime(0.003, audioCtx.currentTime);
+    compressorNode.release.setValueAtTime(0.25, audioCtx.currentTime);
+
     const masterGainNode = audioCtx.createGain();
-    masterGainNode.connect(audioCtx.destination);
+
+    preGainNode.connect(masterGainNode);
+    masterGainNode.connect(compressorNode);
+    compressorNode.connect(audioCtx.destination);
 
     let currentVolume = parseFloat(localStorage.getItem('timer_volume') ?? '0.8');
     let currentChime = localStorage.getItem('timer_chime') ?? 'bell';
@@ -877,16 +1032,109 @@
       localStorage.setItem('timer_volume', currentVolume.toString());
     }
 
-    function updateChime(val) {
-      currentChime = val;
-      localStorage.setItem('timer_chime', val);
+    /* Themes Configuration */
+    const themesList = [
+      { id: 'default', name: 'Default Dark', desc: 'Modern System Sans' },
+      { id: 'chalkboard', name: 'Classroom Chalkboard', desc: 'Warm Casual Font' },
+      { id: 'neon', name: 'Digital Neon', desc: 'Glowing Monospace' },
+      { id: 'pastel', name: 'Warm Pastel', desc: 'Rounded Soft Sans' },
+      { id: 'arcade', name: 'Retro Arcade', desc: '8-Bit Pixel Vintage' },
+      { id: 'cafe', name: 'Cozy Cafe', desc: 'Warm Classic Serif' },
+      { id: 'space', name: 'Deep Space', desc: 'Cosmic Sci-Fi Sans' },
+      { id: 'primary-edu', name: 'Elementary Light', desc: 'Bright Playful Sans' },
+      { id: 'high-contrast', name: 'High Contrast', desc: 'Bold Accessibility' }
+    ];
+
+    /* Chimes Configuration */
+    const chimesList = [
+      { id: 'bell', name: 'Bell Toll', desc: 'Two Deep Church Chimes' },
+      { id: 'harp', name: 'Harp Chime', desc: 'Ascending Glissando' },
+      { id: 'beep', name: 'Digital Beep', desc: '3 Electronic Pulses' },
+      { id: 'marimba', name: 'Marimba Chime', desc: 'Warm Wooden Triad' },
+      { id: 'arcade', name: '8-Bit Level Up', desc: 'Arcade Coin Fanfare' },
+      { id: 'zen', name: 'Singing Bowl', desc: 'Resonant Brass Gong' },
+      { id: 'school', name: 'School Bell', desc: 'Mechanical Ring' },
+      { id: 'sonar', name: 'Radar Ping', desc: 'Submarine Echo' }
+    ];
+
+    /* Modals Control */
+    function openThemeModal() {
+      renderThemeTiles();
+      document.getElementById('theme-modal').classList.add('open');
+    }
+
+    function openChimeModal() {
+      renderChimeTiles();
+      document.getElementById('chime-modal').classList.add('open');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('open');
+    }
+
+    function closeModalOnBackdrop(e, modalId) {
+      if (e.target === document.getElementById(modalId)) {
+        closeModal(modalId);
+      }
+    }
+
+    function renderThemeTiles() {
+      const grid = document.getElementById('theme-tile-grid');
+      grid.innerHTML = '';
+      themesList.forEach(t => {
+        const tile = document.createElement('div');
+        tile.className = `touch-tile ${currentTheme === t.id ? 'selected' : ''}`;
+        tile.onclick = () => {
+          updateTheme(t.id);
+          renderThemeTiles();
+        };
+        tile.innerHTML = `
+          <div class="touch-tile-name">${t.name}</div>
+          <div class="touch-tile-desc">${t.desc}</div>
+        `;
+        grid.appendChild(tile);
+      });
+    }
+
+    function renderChimeTiles() {
+      const grid = document.getElementById('chime-tile-grid');
+      grid.innerHTML = '';
+      chimesList.forEach(c => {
+        const tile = document.createElement('div');
+        tile.className = `touch-tile ${currentChime === c.id ? 'selected' : ''}`;
+        tile.onclick = (e) => {
+          if (!e.target.classList.contains('touch-tile-preview')) {
+            updateChime(c.id);
+            renderChimeTiles();
+          }
+        };
+        tile.innerHTML = `
+          <div class="touch-tile-name">${c.name}</div>
+          <div class="touch-tile-desc">${c.desc}</div>
+          <button class="touch-tile-preview" onclick="previewSound('${c.id}')">🔊 Test</button>
+        `;
+        grid.appendChild(tile);
+      });
     }
 
     function updateTheme(val) {
       currentTheme = val;
       document.body.setAttribute('data-theme', val);
       localStorage.setItem('timer_theme', val);
+      const match = themesList.find(t => t.id === val);
+      if (match) document.getElementById('theme-btn-val').innerText = match.name;
       updateVisualUI();
+    }
+
+    function updateChime(val) {
+      currentChime = val;
+      localStorage.setItem('timer_chime', val);
+      const match = chimesList.find(c => c.id === val);
+      if (match) document.getElementById('chime-btn-val').innerText = match.name;
+    }
+
+    function previewSound(chimeId) {
+      playSoundById(chimeId);
     }
 
     /* Sound Synthesizers */
@@ -896,10 +1144,10 @@
         const gain = audioCtx.createGain();
         osc.type = 'sine';
         osc.frequency.setValueAtTime(587.33, audioCtx.currentTime + (i * 0.6));
-        gain.gain.setValueAtTime(0.7, audioCtx.currentTime + (i * 0.6));
+        gain.gain.setValueAtTime(0.85, audioCtx.currentTime + (i * 0.6));
         gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + (i * 0.6) + 1.4);
         osc.connect(gain);
-        gain.connect(masterGainNode);
+        gain.connect(preGainNode);
         osc.start(audioCtx.currentTime + (i * 0.6));
         osc.stop(audioCtx.currentTime + (i * 0.6) + 1.4);
       }
@@ -912,10 +1160,10 @@
         const gain = audioCtx.createGain();
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.08);
-        gain.gain.setValueAtTime(0.6, audioCtx.currentTime + idx * 0.08);
+        gain.gain.setValueAtTime(0.75, audioCtx.currentTime + idx * 0.08);
         gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + idx * 0.08 + 1.2);
         osc.connect(gain);
-        gain.connect(masterGainNode);
+        gain.connect(preGainNode);
         osc.start(audioCtx.currentTime + idx * 0.08);
         osc.stop(audioCtx.currentTime + idx * 0.08 + 1.2);
       });
@@ -927,10 +1175,10 @@
         const gain = audioCtx.createGain();
         osc.type = 'square';
         osc.frequency.setValueAtTime(880, audioCtx.currentTime + (i * 0.2));
-        gain.gain.setValueAtTime(0.2, audioCtx.currentTime + (i * 0.2));
+        gain.gain.setValueAtTime(0.35, audioCtx.currentTime + (i * 0.2));
         gain.gain.setValueAtTime(0.0001, audioCtx.currentTime + (i * 0.2) + 0.12);
         osc.connect(gain);
-        gain.connect(masterGainNode);
+        gain.connect(preGainNode);
         osc.start(audioCtx.currentTime + (i * 0.2));
         osc.stop(audioCtx.currentTime + (i * 0.2) + 0.12);
       }
@@ -943,10 +1191,10 @@
         const gain = audioCtx.createGain();
         osc.type = 'sine';
         osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.12);
-        gain.gain.setValueAtTime(0.7, audioCtx.currentTime + idx * 0.12);
+        gain.gain.setValueAtTime(0.85, audioCtx.currentTime + idx * 0.12);
         gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + idx * 0.12 + 0.5);
         osc.connect(gain);
-        gain.connect(masterGainNode);
+        gain.connect(preGainNode);
         osc.start(audioCtx.currentTime + idx * 0.12);
         osc.stop(audioCtx.currentTime + idx * 0.12 + 0.5);
       });
@@ -959,10 +1207,10 @@
         const gain = audioCtx.createGain();
         osc.type = 'square';
         osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.06);
-        gain.gain.setValueAtTime(0.35, audioCtx.currentTime + idx * 0.06);
+        gain.gain.setValueAtTime(0.45, audioCtx.currentTime + idx * 0.06);
         gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + idx * 0.06 + 0.2);
         osc.connect(gain);
-        gain.connect(masterGainNode);
+        gain.connect(preGainNode);
         osc.start(audioCtx.currentTime + idx * 0.06);
         osc.stop(audioCtx.currentTime + idx * 0.06 + 0.2);
       });
@@ -974,10 +1222,10 @@
         const gain = audioCtx.createGain();
         osc.type = 'sine';
         osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.35, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.55, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 3.5);
         osc.connect(gain);
-        gain.connect(masterGainNode);
+        gain.connect(preGainNode);
         osc.start(audioCtx.currentTime);
         osc.stop(audioCtx.currentTime + 3.5);
       });
@@ -990,10 +1238,10 @@
         const gain = audioCtx.createGain();
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(800 + (i % 2) * 120, startTime + i * 0.045);
-        gain.gain.setValueAtTime(0.3, startTime + i * 0.045);
+        gain.gain.setValueAtTime(0.45, startTime + i * 0.045);
         gain.gain.exponentialRampToValueAtTime(0.001, startTime + i * 0.045 + 0.04);
         osc.connect(gain);
-        gain.connect(masterGainNode);
+        gain.connect(preGainNode);
         osc.start(startTime + i * 0.045);
         osc.stop(startTime + i * 0.045 + 0.04);
       }
@@ -1005,24 +1253,28 @@
       osc.type = 'sine';
       osc.frequency.setValueAtTime(1480, audioCtx.currentTime);
       osc.frequency.exponentialRampToValueAtTime(1100, audioCtx.currentTime + 1.2);
-      gain.gain.setValueAtTime(0.7, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.85, audioCtx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 2.0);
       osc.connect(gain);
-      gain.connect(masterGainNode);
+      gain.connect(preGainNode);
       osc.start(audioCtx.currentTime);
       osc.stop(audioCtx.currentTime + 2.0);
     }
 
-    function playAlertChime() {
+    function playSoundById(id) {
       if (audioCtx.state === 'suspended') audioCtx.resume();
-      if (currentChime === 'bell') playSoundBell();
-      else if (currentChime === 'harp') playSoundHarp();
-      else if (currentChime === 'beep') playSoundBeep();
-      else if (currentChime === 'marimba') playSoundMarimba();
-      else if (currentChime === 'arcade') playSoundArcade();
-      else if (currentChime === 'zen') playSoundZen();
-      else if (currentChime === 'school') playSoundSchool();
-      else if (currentChime === 'sonar') playSoundSonar();
+      if (id === 'bell') playSoundBell();
+      else if (id === 'harp') playSoundHarp();
+      else if (id === 'beep') playSoundBeep();
+      else if (id === 'marimba') playSoundMarimba();
+      else if (id === 'arcade') playSoundArcade();
+      else if (id === 'zen') playSoundZen();
+      else if (id === 'school') playSoundSchool();
+      else if (id === 'sonar') playSoundSonar();
+    }
+
+    function playAlertChime() {
+      playSoundById(currentChime);
     }
 
     function checkWorkerActivity() {
@@ -1083,328 +1335,4 @@
       { label: '20m', sec: 1200 },
       { label: '25m', sec: 1500 },
       { label: '30m', sec: 1800 },
-      { label: '45m', sec: 2700 },
-      { label: '60m', sec: 3600 }
-    ];
-
-    function createPresetButtons(containerId, onSelectCallback) {
-      const container = document.getElementById(containerId);
-      presetTimes.forEach(p => {
-        const btn = document.createElement('button');
-        btn.className = 'preset-btn';
-        btn.innerText = p.label;
-        btn.onclick = () => onSelectCallback(p.sec);
-        container.appendChild(btn);
-      });
-    }
-
-    const msState = {
-      cd: localStorage.getItem('timer_ms_cd') === 'true',
-      turn: localStorage.getItem('timer_ms_turn') === 'true',
-      vis: localStorage.getItem('timer_ms_vis') === 'true'
-    };
-
-    function updateTogglePillText(key) {
-      const btn = document.getElementById(`${key}-ms-toggle`);
-      btn.innerText = msState[key] ? 'Precise' : 'Whole Second';
-      btn.classList.toggle('active', msState[key]);
-    }
-
-    function initMsButtons() {
-      ['cd', 'turn', 'vis'].forEach(key => updateTogglePillText(key));
-    }
-
-    function toggleMs(timerKey) {
-      msState[timerKey] = !msState[timerKey];
-      localStorage.setItem(`timer_ms_${timerKey}`, msState[timerKey]);
-      updateTogglePillText(timerKey);
-
-      if (timerKey === 'cd') updateCdDisplay();
-      if (timerKey === 'turn') updateTurnUI();
-      if (timerKey === 'vis') updateVisualUI();
-    }
-
-    /* 1. Countdown */
-    let cdDurationMs = 300000, cdTimeLeftMs = 300000;
-    let cdRunning = false, cdLastTime = null;
-
-    function updateCdDisplay() {
-      document.getElementById('cd-display').innerText = formatTime(cdTimeLeftMs, msState.cd);
-    }
-    function stepCountdown(deltaSec) {
-      if (cdRunning) return;
-      cdDurationMs = Math.max(5000, cdDurationMs + deltaSec * 1000);
-      cdTimeLeftMs = cdDurationMs;
-      updateCdDisplay();
-    }
-    function loadCountdownPreset(sec) {
-      if (cdRunning) toggleCountdown();
-      cdDurationMs = sec * 1000;
-      cdTimeLeftMs = cdDurationMs;
-      updateCdDisplay();
-      toggleCountdown();
-    }
-    function tickCountdown(now) {
-      if (!cdLastTime) cdLastTime = now;
-      const delta = now - cdLastTime;
-      cdLastTime = now;
-      cdTimeLeftMs -= delta;
-
-      if (cdTimeLeftMs <= 0) {
-        cdTimeLeftMs = 0;
-        cdRunning = false;
-        cdLastTime = null;
-        updateCdDisplay();
-        checkWorkerActivity();
-        playAlertChime();
-        const btn = document.getElementById('cd-start');
-        btn.innerText = 'Start';
-        btn.classList.replace('btn-pause', 'btn-start');
-        return;
-      }
-      updateCdDisplay();
-    }
-    function toggleCountdown() {
-      const btn = document.getElementById('cd-start');
-      if (cdRunning) {
-        cdRunning = false;
-        cdLastTime = null;
-        btn.innerText = 'Resume';
-        btn.classList.replace('btn-pause', 'btn-start');
-      } else {
-        cdRunning = true;
-        cdLastTime = Date.now();
-        btn.innerText = 'Pause';
-        btn.classList.replace('btn-start', 'btn-pause');
-      }
-      checkWorkerActivity();
-    }
-    function resetCountdown() {
-      cdRunning = false;
-      cdLastTime = null;
-      checkWorkerActivity();
-      cdTimeLeftMs = cdDurationMs;
-      updateCdDisplay();
-      const btn = document.getElementById('cd-start');
-      btn.innerText = 'Start';
-      btn.classList.replace('btn-pause', 'btn-start');
-    }
-
-    /* 2. Turn Timer */
-    let totalTurns = 4;
-    let currentTurn = 1, turnDurationMs = 60000, turnTimeLeftMs = 60000;
-    let turnRunning = false, turnLastTime = null;
-
-    function updateTurnUI() {
-      const turnsDisplay = (totalTurns === Infinity) ? '∞' : totalTurns;
-      document.getElementById('total-turns-val').innerText = turnsDisplay;
-      document.getElementById('turn-badge').innerText = `Turn ${currentTurn} of ${turnsDisplay}`;
-      document.getElementById('turn-digits').innerText = formatTime(turnTimeLeftMs, msState.turn);
-      const progress = (turnTimeLeftMs / turnDurationMs) * 100;
-      document.getElementById('turn-progress').style.width = `${Math.max(0, progress)}%`;
-    }
-
-    function adjustTurns(delta) {
-      if (turnRunning) return;
-      if (delta < 0) {
-        if (totalTurns === 1) {
-          totalTurns = Infinity;
-        } else if (totalTurns !== Infinity) {
-          totalTurns = Math.max(1, totalTurns + delta);
-        }
-      } else if (delta > 0) {
-        if (totalTurns === Infinity) {
-          totalTurns = 1;
-        } else {
-          totalTurns += delta;
-        }
-      }
-      currentTurn = 1;
-      updateTurnUI();
-    }
-
-    function adjustTurnDuration(deltaSec) {
-      if (turnRunning) return;
-      turnDurationMs = Math.max(5000, turnDurationMs + deltaSec * 1000);
-      turnTimeLeftMs = turnDurationMs;
-      updateTurnUI();
-    }
-    function loadTurnPreset(sec) {
-      if (turnRunning) toggleTurnTimer();
-      turnDurationMs = sec * 1000;
-      turnTimeLeftMs = turnDurationMs;
-      updateTurnUI();
-    }
-    function tickTurn(now) {
-      if (!turnLastTime) turnLastTime = now;
-      const delta = now - turnLastTime;
-      turnLastTime = now;
-      turnTimeLeftMs -= delta;
-
-      if (turnTimeLeftMs <= 0) {
-        if (totalTurns === Infinity || currentTurn < totalTurns) {
-          playSoundHarp();
-          currentTurn++;
-          turnTimeLeftMs = turnDurationMs;
-          updateTurnUI();
-        } else {
-          turnTimeLeftMs = 0;
-          turnRunning = false;
-          turnLastTime = null;
-          updateTurnUI();
-          checkWorkerActivity();
-          playAlertChime();
-          const btn = document.getElementById('turn-start');
-          btn.innerText = 'Start';
-          btn.classList.replace('btn-pause', 'btn-start');
-        }
-        return;
-      }
-      updateTurnUI();
-    }
-    function toggleTurnTimer() {
-      const btn = document.getElementById('turn-start');
-      if (turnRunning) {
-        turnRunning = false;
-        turnLastTime = null;
-        btn.innerText = 'Resume';
-        btn.classList.replace('btn-pause', 'btn-start');
-      } else {
-        turnRunning = true;
-        turnLastTime = Date.now();
-        btn.innerText = 'Pause';
-        btn.classList.replace('btn-start', 'btn-pause');
-      }
-      checkWorkerActivity();
-    }
-    function resetTurnTimer() {
-      turnRunning = false;
-      turnLastTime = null;
-      checkWorkerActivity();
-      currentTurn = 1;
-      turnTimeLeftMs = turnDurationMs;
-      updateTurnUI();
-      const btn = document.getElementById('turn-start');
-      btn.innerText = 'Start';
-      btn.classList.replace('btn-pause', 'btn-start');
-    }
-
-    /* 3. Visual Timer */
-    let visDurationMs = 180000, visTimeLeftMs = 180000;
-    let visRunning = false, visLastTime = null;
-    let visualMode = localStorage.getItem('timer_visual_mode') ?? 'pie';
-
-    function applyVisualMode() {
-      document.getElementById('vis-chart-mode').innerText = `Mode: ${visualMode === 'pie' ? 'Pie' : 'Bar'}`;
-      document.getElementById('pie-wheel').style.display = (visualMode === 'pie') ? 'block' : 'none';
-      document.getElementById('visual-bar-wrap').style.display = (visualMode === 'bar') ? 'block' : 'none';
-      updateVisualUI();
-    }
-
-    function toggleChartMode() {
-      visualMode = (visualMode === 'pie') ? 'bar' : 'pie';
-      localStorage.setItem('timer_visual_mode', visualMode);
-      applyVisualMode();
-    }
-
-    function updateVisualUI() {
-      const remainingRatio = Math.max(0, Math.min(1, visTimeLeftMs / visDurationMs));
-      const remainingPercent = remainingRatio * 100;
-
-      if (visualMode === 'pie') {
-        const pie = document.getElementById('pie-wheel');
-        pie.style.background = `conic-gradient(from 0deg, var(--success) 0% ${remainingPercent}%, var(--danger) ${remainingPercent}% 100%)`;
-      } else {
-        const bar = document.getElementById('visual-bar-fill');
-        bar.style.width = `${remainingPercent}%`;
-      }
-
-      document.getElementById('visual-time').innerText = formatTime(visTimeLeftMs, msState.vis);
-    }
-    function stepVisualDuration(deltaSec) {
-      if (visRunning) return;
-      visDurationMs = Math.max(10000, visDurationMs + deltaSec * 1000);
-      visTimeLeftMs = visDurationMs;
-      updateVisualUI();
-    }
-    function loadVisualPreset(sec) {
-      if (visRunning) toggleVisualTimer();
-      visDurationMs = sec * 1000;
-      visTimeLeftMs = visDurationMs;
-      updateVisualUI();
-      toggleVisualTimer();
-    }
-    function tickVisual(now) {
-      if (!visLastTime) visLastTime = now;
-      const delta = now - visLastTime;
-      visLastTime = now;
-      visTimeLeftMs -= delta;
-
-      if (visTimeLeftMs <= 0) {
-        visTimeLeftMs = 0;
-        visRunning = false;
-        visLastTime = null;
-        updateVisualUI();
-        checkWorkerActivity();
-        playAlertChime();
-        const btn = document.getElementById('vis-start');
-        btn.innerText = 'Start';
-        btn.classList.replace('btn-pause', 'btn-start');
-        return;
-      }
-      updateVisualUI();
-    }
-    function toggleVisualTimer() {
-      const btn = document.getElementById('vis-start');
-      if (visRunning) {
-        visRunning = false;
-        visLastTime = null;
-        btn.innerText = 'Resume';
-        btn.classList.replace('btn-pause', 'btn-start');
-      } else {
-        visRunning = true;
-        visLastTime = Date.now();
-        btn.innerText = 'Pause';
-        btn.classList.replace('btn-start', 'btn-pause');
-      }
-      checkWorkerActivity();
-    }
-    function resetVisualTimer() {
-      visRunning = false;
-      visLastTime = null;
-      checkWorkerActivity();
-      visTimeLeftMs = visDurationMs;
-      updateVisualUI();
-      const btn = document.getElementById('vis-start');
-      btn.innerText = 'Start';
-      btn.classList.replace('btn-pause', 'btn-start');
-    }
-
-    /* Visibility Catchup */
-    document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) {
-        if (cdRunning) updateCdDisplay();
-        if (turnRunning) updateTurnUI();
-        if (visRunning) updateVisualUI();
-      }
-    });
-
-    /* Hydrate Preferences & Init */
-    document.getElementById('vol-slider').value = Math.round(currentVolume * 100);
-    document.getElementById('vol-label').innerText = `${Math.round(currentVolume * 100)}%`;
-    document.getElementById('chime-select').value = currentChime;
-    document.getElementById('theme-select').value = currentTheme;
-    document.body.setAttribute('data-theme', currentTheme);
-
-    initMsButtons();
-    applyVisualMode();
-
-    createPresetButtons('cd-presets', loadCountdownPreset);
-    createPresetButtons('turn-presets', loadTurnPreset);
-    createPresetButtons('vis-presets', loadVisualPreset);
-
-    updateTurnUI();
-    updateVisualUI();
-  </script>
-</body>
-</html>
+      { label: '45m', sec: 2700

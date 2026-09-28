@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Timers</title>
-  <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="55" r="40" fill="%231e2433" stroke="%233b82f6" stroke-width="8"/><path d="M50 25 V55 L70 70" fill="none" stroke="%23f8fafc" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><rect x="40" y="5" width="20" height="8" fill="%233b82f6" rx="4"/><path d="M75 20 L85 10" stroke="%233b82f6" stroke-width="6" stroke-linecap="round"/></svg>' type="image/svg+xml">
+  <title>Classroom Student Selectors</title>
+  <!-- Option 1: Spinner Wheel with Arrow Pointer Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23131722'/%3E%3Cg transform='translate(16, 17)'%3E%3Cpath d='M0 0 L0 -11 A11 11 0 0 1 11 0 Z' fill='%23ef4444'/%3E%3Cpath d='M0 0 L11 0 A11 11 0 0 1 0 11 Z' fill='%233b82f6'/%3E%3Cpath d='M0 0 L0 11 A11 11 0 0 1 -11 0 Z' fill='%2310b981'/%3E%3Cpath d='M0 0 L-11 0 A11 11 0 0 1 0 -11 Z' fill='%23f59e0b'/%3E%3Ccircle cx='0' cy='0' r='3.5' fill='%231e2433' stroke='%23334155' stroke-width='1'/%3E%3C/g%3E%3Cpolygon points='16,3 13,8 19,8' fill='%23ef4444' stroke='%23ffffff' stroke-width='0.75'/%3E%3C/svg%3E">
   <style>
     /* Theme Palettes & Typography */
     :root {
@@ -210,19 +211,17 @@
       display: flex;
       flex-direction: column;
       padding: 4.25rem 1rem 1.5rem 1rem;
-      gap: 0.9rem;
+      gap: 0.75rem;
       overflow-y: auto;
       flex-shrink: 0;
       transition: margin-left 0.28s cubic-bezier(0.4, 0, 0.2, 1);
       z-index: 50;
     }
 
-    /* Manual Collapse */
     nav.collapsed {
       margin-left: -270px !important;
     }
 
-    /* Automatic Responsive Collapse below 900px */
     @media (max-width: 900px) {
       nav {
         margin-left: -270px;
@@ -232,7 +231,6 @@
         left: 0;
         box-shadow: 8px 0 24px rgba(0, 0, 0, 0.6);
       }
-      /* If user explicitly opens it while screen is small */
       nav.expanded-mobile {
         margin-left: 0 !important;
       }
@@ -242,9 +240,9 @@
       background-color: var(--bg-input);
       border: 2px solid transparent;
       color: var(--text-main);
-      padding: 1.15rem 1rem;
+      padding: 0.95rem 0.85rem;
       border-radius: 16px;
-      font-size: 1.25rem;
+      font-size: 1.15rem;
       font-weight: 700;
       text-align: center;
       justify-content: center;
@@ -270,86 +268,40 @@
       color: #000000;
     }
 
-    /* Sidebar Settings */
     .nav-settings {
       margin-top: auto;
       display: flex;
       flex-direction: column;
-      gap: 1.1rem;
+      gap: 0.75rem;
       border-top: 2px solid var(--border-color);
-      padding-top: 1.25rem;
+      padding-top: 1rem;
     }
 
-    .setting-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-    }
-
-    .setting-label {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      font-weight: 800;
-      color: var(--text-muted);
-      display: flex;
-      justify-content: space-between;
-      letter-spacing: 0.05em;
-    }
-
-    .modal-trigger-btn {
+    .settings-launcher-btn {
       background-color: var(--bg-input);
       border: 2px solid var(--border-color);
       color: var(--text-main);
-      padding: 0.85rem 0.9rem;
-      border-radius: 14px;
-      font-size: 1rem;
-      font-weight: 700;
+      padding: 0.85rem 1rem;
+      border-radius: 16px;
+      font-size: 1.1rem;
+      font-weight: 800;
       font-family: inherit;
       cursor: pointer;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      text-align: left;
-      gap: 0.5rem;
+      justify-content: center;
+      gap: 0.6rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      transition: all 0.2s ease;
     }
 
-    .modal-trigger-btn:hover {
+    .settings-launcher-btn:hover {
       border-color: var(--primary);
-      filter: brightness(1.1);
+      filter: brightness(1.15);
     }
 
-    .modal-trigger-btn:active {
-      transform: scale(0.97);
-    }
-
-    .modal-trigger-val {
-      color: var(--text-muted);
-      font-weight: 600;
-      font-size: 0.9rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 110px;
-    }
-
-    .volume-slider {
-      -webkit-appearance: none;
-      width: 100%;
-      height: 12px;
-      border-radius: 6px;
-      background: var(--border-color);
-      outline: none;
-      cursor: pointer;
-    }
-
-    .volume-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      background: var(--primary);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-      cursor: pointer;
+    .settings-launcher-btn:active {
+      transform: scale(0.96);
     }
 
     .app-meta-footer {
@@ -357,7 +309,7 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding-top: 0.25rem;
+      padding-top: 0.15rem;
       font-size: 0.68rem;
       font-weight: 600;
       color: var(--text-muted);
@@ -371,7 +323,7 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      padding: 1rem 1.5rem;
+      padding: 1.25rem 1.75rem;
       gap: 0.75rem;
       position: relative;
       align-items: center;
@@ -382,7 +334,7 @@
       height: 100vh;
     }
 
-    .timer-view {
+    .tool-view {
       display: none;
       width: 100%;
       max-width: 1200px;
@@ -391,105 +343,24 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      gap: 0.5rem;
-    }
-
-    .timer-view.active {
-      display: flex;
-    }
-
-    /* Display Area */
-    .display-box {
-      background-color: var(--bg-card);
-      border: 2px solid var(--border-color);
-      border-radius: 24px;
-      width: 100%;
-      flex: 1;
-      min-height: 200px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      padding: 0.75rem 1.5rem;
-      overflow: hidden;
-      container-type: size; /* Enables container scaling */
-    }
-
-    /* 
-      Dynamic Font Scaling:
-      Uses the --char-count CSS variable calculated by JS to determine the 
-      exact maximum width the font can grow to without cutting off.
-    */
-    .timer-digits {
-      font-size: min(calc(90cqw / (var(--char-count, 5) * 0.6)), 55cqh);
-      font-weight: 900;
-      font-variant-numeric: tabular-nums;
-      letter-spacing: 2px;
-      text-align: center;
-      line-height: 1;
-      max-width: 100%;
-      white-space: nowrap;
-    }
-
-    /* Steppers */
-    .stepper-deck {
-      display: flex;
       gap: 0.75rem;
-      align-items: center;
-      flex-shrink: 0;
     }
 
-    .stepper {
+    .tool-view.active {
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      background-color: var(--bg-input);
-      border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 0.4rem;
-      gap: 0.2rem;
     }
 
-    .stepper-btn {
-      width: 60px;
-      height: 40px;
-      border: none;
-      background-color: var(--bg-card);
-      color: var(--text-main);
-      font-size: 1.3rem;
-      font-weight: 800;
-      font-family: inherit;
-      border-radius: 8px;
-      cursor: pointer;
+    /* Top Strip Controls */
+    .top-config-strip {
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-
-    .stepper-btn:active {
-      background-color: var(--primary);
-      color: #ffffff;
-      transform: scale(0.95);
-    }
-
-    .stepper-label {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      font-weight: 700;
-      color: var(--text-muted);
-    }
-
-    /* Turn Selector Box */
-    .turn-config-strip {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1.5rem;
+      gap: 1.25rem;
       flex-shrink: 0;
+      flex-wrap: wrap;
     }
 
-    .turn-selector-card {
+    .config-card {
       background: var(--bg-input);
       border: 2px solid var(--accent);
       border-radius: 20px;
@@ -500,41 +371,38 @@
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
     }
 
-    .turn-selector-info {
+    .config-card-info {
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
       justify-content: center;
-      min-width: 130px;
+      min-width: 120px;
     }
 
-    .turn-selector-label {
+    .config-card-label {
       font-size: 0.8rem;
       font-weight: 800;
       text-transform: uppercase;
       color: var(--text-muted);
       letter-spacing: 0.05em;
-      text-align: center;
     }
 
-    .turn-selector-count {
+    .config-card-count {
       font-size: 2.2rem;
       font-weight: 900;
       color: var(--text-main);
       line-height: 1.1;
       font-variant-numeric: tabular-nums;
-      text-align: center;
-      width: 100%;
     }
 
-    .turn-selector-stepper {
+    .config-stepper {
       display: flex;
       flex-direction: column;
       gap: 0.3rem;
     }
 
-    .turn-stepper-btn {
+    .config-stepper-btn {
       width: 54px;
       height: 38px;
       border: none;
@@ -551,14 +419,231 @@
       transition: background-color 0.15s;
     }
 
-    .turn-stepper-btn:hover {
+    .config-stepper-btn:hover {
       filter: brightness(1.2);
     }
 
-    .turn-stepper-btn:active {
+    .config-stepper-btn:active {
       background-color: var(--accent);
       color: #ffffff;
       transform: scale(0.95);
+    }
+
+    /* Big Display Area */
+    .display-box {
+      background-color: var(--bg-card);
+      border: 2px solid var(--border-color);
+      border-radius: 24px;
+      width: 100%;
+      flex: 1;
+      min-height: 240px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 1.25rem;
+      overflow: hidden;
+      container-type: size;
+    }
+
+    .display-digits {
+      font-size: clamp(2.4rem, 6cqh, 4.4rem);
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-align: center;
+      line-height: 1.1;
+      max-width: 100%;
+      text-transform: uppercase;
+      min-height: 1.15em;
+      flex-shrink: 0;
+      margin-top: 0.35rem;
+    }
+
+    .display-digits.celebrate {
+      animation: popCelebrate 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes popCelebrate {
+      0% { transform: scale(0.7); }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+
+    /* Interactive Wheel Stage - Unconstrained to Fill Max Area */
+    .wheel-stage {
+      position: relative;
+      width: min(calc(100cqh - 5.5rem), calc(100cqw - 2rem));
+      height: min(calc(100cqh - 5.5rem), calc(100cqw - 2rem));
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: auto;
+      flex-shrink: 0;
+    }
+
+    /* Game-Show Flipping Triangle Pointer */
+    .wheel-pointer {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      margin-left: -18px;
+      width: 0;
+      height: 0;
+      border-left: 18px solid transparent;
+      border-right: 18px solid transparent;
+      border-top: 36px solid var(--danger);
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.6));
+      z-index: 40;
+      transform-origin: 50% 0%;
+      transition: transform 0.05s ease-out;
+      pointer-events: none;
+    }
+
+    .wheel-pointer.kick {
+      transform: rotate(-24deg);
+    }
+
+    .wheel-hub {
+      position: absolute;
+      width: clamp(38px, 12%, 60px);
+      height: clamp(38px, 12%, 60px);
+      background-color: var(--bg-card);
+      border: 4px solid var(--border-color);
+      border-radius: 50%;
+      z-index: 10;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    canvas.wheel-canvas {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      border: 4px solid var(--border-color);
+    }
+
+    /* Dual Independent Spinners Stage */
+    .dual-spinner-stage {
+      display: flex;
+      align-items: center;
+      justify-content: space-evenly;
+      width: 100%;
+      height: 100%;
+      flex: 1;
+      gap: 1.5rem;
+    }
+
+    .dual-spinner-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      flex: 1;
+      height: 100%;
+      max-width: 50%;
+    }
+
+    .dual-spinner-col .wheel-stage {
+      width: min(calc(100cqh - 6.5rem), calc(50cqw - 2rem));
+      height: min(calc(100cqh - 6.5rem), calc(50cqw - 2rem));
+      aspect-ratio: 1 / 1;
+      margin: 0.2rem auto;
+    }
+
+    .dual-spinner-col .wheel-pointer {
+      top: -16px;
+      margin-left: -15px;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-top: 30px solid var(--danger);
+    }
+
+    .dual-spinner-title {
+      font-size: clamp(1.1rem, 2.5vh, 1.6rem);
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      flex-shrink: 0;
+    }
+
+    .dual-display-val {
+      font-size: clamp(1.8rem, 4.5vh, 3.2rem);
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-align: center;
+      min-height: 1.15em;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .dual-display-val.celebrate {
+      animation: popCelebrate 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    /* Full-Screen Fill Sequencer Container */
+    .sequence-container {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      align-items: stretch;
+      justify-content: space-between;
+      gap: clamp(0.5rem, 1.5vh, 1.25rem);
+      width: 100%;
+      height: 100%;
+      padding: 0.5rem 0.25rem;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    /* Edge-to-Edge Sequencer Cards Filling Available Area */
+    .seq-step-card {
+      border: 4px solid rgba(255, 255, 255, 0.8);
+      border-radius: 22px;
+      padding: 0.5rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      width: 100%;
+      flex: 1 1 0;
+      min-height: 48px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+      color: #ffffff;
+      transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.15s ease;
+      will-change: transform;
+    }
+
+    .seq-step-card.shell-swapping {
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7);
+      z-index: 20;
+    }
+
+    .seq-step-card.celebrate {
+      animation: popCelebrate 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    /* Solid White Text with Perfect Black Outline (No Pinch Artifacts) */
+    .seq-step-val {
+      font-size: clamp(2rem, 5vh, 3.4rem);
+      font-weight: 900;
+      color: #ffffff;
+      text-align: center;
+      width: 100%;
+      white-space: nowrap;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      paint-order: stroke fill;
+      -webkit-text-stroke: 4px #000000;
+      text-shadow: 
+        -2px -2px 0 #000,
+         2px -2px 0 #000,
+        -2px  2px 0 #000,
+         2px  2px 0 #000,
+         0 4px 12px rgba(0, 0, 0, 0.85);
     }
 
     /* Control Deck & Buttons */
@@ -569,15 +654,16 @@
       justify-content: center;
       align-items: center;
       flex-shrink: 0;
+      flex-wrap: wrap;
     }
 
     .action-btn {
       flex: 1;
-      max-width: 220px;
+      max-width: 240px;
       height: 64px;
       border-radius: 16px;
       border: 2px solid transparent;
-      font-size: 1.5rem;
+      font-size: 1.45rem;
       font-weight: 900;
       font-family: inherit;
       color: #ffffff;
@@ -592,13 +678,18 @@
       transform: translateY(2px);
     }
 
-    .btn-start { background-color: var(--success); }
-    .btn-pause { background-color: var(--warning); color: #000000; }
+    .action-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-pick { background-color: var(--success); }
     .btn-reset { background-color: var(--danger); }
 
     .toggle-pill-btn {
       height: 64px;
-      padding: 0 1.25rem;
+      padding: 0 1.35rem;
       border-radius: 16px;
       border: 2px solid var(--border-color);
       background-color: var(--bg-input);
@@ -610,7 +701,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      min-width: 140px;
+      min-width: 155px;
       transition: all 0.2s ease;
     }
 
@@ -620,132 +711,7 @@
       background-color: var(--bg-card);
     }
 
-    /* Presets */
-    .preset-multi-row {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 0.4rem;
-      width: 100%;
-      max-width: 1050px;
-      background-color: var(--bg-card);
-      border: 1px solid var(--border-color);
-      padding: 0.5rem 0.75rem;
-      border-radius: 14px;
-      flex-shrink: 0;
-    }
-
-    .preset-btn {
-      background-color: var(--bg-input);
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      padding: 0.4rem 0.75rem;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      font-weight: 700;
-      font-family: inherit;
-      cursor: pointer;
-      transition: background 0.1s;
-    }
-
-    .preset-btn:active {
-      background-color: var(--primary);
-      color: #ffffff;
-      transform: scale(0.95);
-    }
-
-    /* Turn Timer Progress */
-    .turn-badge {
-      position: absolute;
-      top: 1rem;
-      left: 1.25rem;
-      background-color: var(--accent);
-      color: #ffffff;
-      padding: 0.5rem 1.4rem;
-      border-radius: 100px;
-      font-size: 1.35rem;
-      font-weight: 900;
-      z-index: 5;
-    }
-
-    .progress-track {
-      width: 100%;
-      height: 18px;
-      background: var(--border-color);
-      border-radius: 9px;
-      overflow: hidden;
-      margin-top: 1rem;
-    }
-
-    .progress-fill {
-      height: 100%;
-      width: 100%;
-      background: var(--accent);
-      transition: width 0.05s linear;
-    }
-
-    /* Visual Timer Viewport */
-    .visual-stage {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
-      gap: 0.75rem;
-    }
-
-    .pie-wheel {
-      width: min(calc(100cqh - 5.5rem), calc(100cqw - 2rem), 380px);
-      height: min(calc(100cqh - 5.5rem), calc(100cqw - 2rem), 380px);
-      aspect-ratio: 1 / 1;
-      border-radius: 50%;
-      border: 5px solid var(--border-color);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
-      background: conic-gradient(from 0deg, var(--success) 0% 100%, var(--danger) 100% 100%);
-      flex-shrink: 0;
-    }
-
-    .visual-bar-wrap {
-      width: 92%;
-      max-width: 950px;
-      height: min(16vh, 120px);
-      min-height: 60px;
-      background-color: var(--danger);
-      border: 4px solid var(--border-color);
-      border-radius: 24px;
-      overflow: hidden;
-      position: relative;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-      display: none;
-      flex-shrink: 0;
-    }
-
-    .visual-bar-fill {
-      height: 100%;
-      width: 100%;
-      background-color: var(--success);
-      transition: width 0.05s linear;
-    }
-
-    .visual-time-text {
-      /* Shared dynamic scaling but bound to 18cqh so it doesn't overlap the chart */
-      font-size: min(calc(90cqw / (var(--char-count, 5) * 0.6)), 18cqh);
-      font-weight: 900;
-      font-variant-numeric: tabular-nums;
-      letter-spacing: 2px;
-      color: var(--text-main);
-      line-height: 1;
-      text-align: center;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    #vis-display-box {
-      container-type: size;
-    }
-
-    /* Modal Overlay */
+    /* Modals */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -812,9 +778,32 @@
     .modal-body {
       padding: 1.5rem 2rem;
       overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.4rem;
+    }
+
+    .modal-grid-body {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 1rem;
+    }
+
+    .settings-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .settings-row-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.95rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
     }
 
     .touch-tile {
@@ -830,7 +819,6 @@
       gap: 0.5rem;
       cursor: pointer;
       transition: all 0.2s ease;
-      position: relative;
     }
 
     .touch-tile:hover {
@@ -873,17 +861,59 @@
       cursor: pointer;
     }
 
-    .touch-tile-preview:active {
-      transform: scale(0.95);
+    .modal-trigger-btn {
+      background-color: var(--bg-input);
+      border: 2px solid var(--border-color);
+      color: var(--text-main);
+      padding: 1rem 1.2rem;
+      border-radius: 16px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-align: left;
+    }
+
+    .modal-trigger-btn:hover {
+      border-color: var(--primary);
+      filter: brightness(1.1);
+    }
+
+    .modal-trigger-val {
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .volume-slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 14px;
+      border-radius: 7px;
+      background: var(--border-color);
+      outline: none;
+      cursor: pointer;
+      margin-top: 0.4rem;
+    }
+
+    .volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--primary);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      cursor: pointer;
     }
 
     /* ---------------------------------
        EMBED MODE CSS RULES 
        --------------------------------- */
     body.is-embedded .sidebar-toggle-btn,
-    body.is-embedded nav,
-    body.is-embedded .preset-multi-row,
-    body.is-embedded .toggle-pill-btn {
+    body.is-embedded nav {
       display: none !important;
     }
     
@@ -893,19 +923,9 @@
       width: 100vw;
     }
     
-    body.is-embedded .timer-view {
+    body.is-embedded .tool-view {
       min-height: 0;
       height: 100%;
-    }
-    
-    body.is-embedded .stepper-deck {
-      gap: 0.5rem;
-    }
-    
-    body.is-embedded .stepper-btn {
-      width: 48px;
-      height: 32px;
-      font-size: 1.1rem;
     }
     
     body.is-embedded .display-box {
@@ -922,222 +942,310 @@
 </head>
 <body data-theme="default">
 
-  <!-- Floating Toggle Button for Sidebar -->
   <button class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Toggle Sidebar">☰</button>
 
   <nav id="app-sidebar">
-    <button class="nav-btn" onclick="switchTimer('countdown', event)">Countdown</button>
-    <button class="nav-btn" onclick="switchTimer('turn', event)">Turn Timer</button>
-    <button class="nav-btn" onclick="switchTimer('visual', event)">Visual Timer</button>
+    <button class="nav-btn active" onclick="switchView('seat-picker', event)">Seat Selector</button>
+    <button class="nav-btn" onclick="switchView('partner-picker', event)">Partner Selector</button>
+    <button class="nav-btn" onclick="switchView('seat-seq', event)">Seat Sequencer</button>
+    <button class="nav-btn" onclick="switchView('team-picker', event)">Team Selector</button>
+    <button class="nav-btn" onclick="switchView('dual-picker', event)">Team & Student</button>
+    <button class="nav-btn" onclick="switchView('team-seq', event)">Team Sequencer</button>
 
     <div class="nav-settings">
-      <div class="setting-group">
-        <div class="setting-label">Theme & Font</div>
-        <button class="modal-trigger-btn" onclick="openThemeModal()">
-          <span>Theme</span>
-          <span class="modal-trigger-val" id="theme-btn-val">Default Dark</span>
-        </button>
-      </div>
+      <button class="settings-launcher-btn" onclick="openMainSettingsModal()">
+        <span>⚙ Settings</span>
+      </button>
 
-      <div class="setting-group">
-        <div class="setting-label">Chime Sound</div>
-        <button class="modal-trigger-btn" onclick="openChimeModal()">
-          <span>Sound</span>
-          <span class="modal-trigger-val" id="chime-btn-val">Bell Toll</span>
-        </button>
-      </div>
-
-      <div class="setting-group">
-        <div class="setting-label">
-          <span>Volume</span>
-          <span id="vol-label">80%</span>
-        </div>
-        <input type="range" class="volume-slider" id="vol-slider" min="0" max="100" value="80" oninput="updateVolume(this.value)">
-      </div>
-
-      <!-- NEW: Integration / Embed Generator Button -->
-      <div class="setting-group">
-        <div class="setting-label">Integration</div>
-        <button class="modal-trigger-btn" onclick="copyEmbedCode(this)">
+      <!-- Embed Generator Section -->
+      <div style="display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.5rem;">
+        <div style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; margin-bottom: 0.2rem;">Integration</div>
+        <button class="settings-launcher-btn" onclick="copyEmbedCode(this)" style="justify-content: space-between; font-size: 0.95rem; padding: 0.85rem 1rem;">
           <span>Copy Embed Code</span>
-          <span class="modal-trigger-val">🔗</span>
+          <span>🔗</span>
         </button>
-        <div style="font-size: 0.75rem; color: var(--text-muted); opacity: 0.8; text-align: center; margin-top: -0.2rem; line-height: 1.3;">
-          Saves your current timer, theme, and chime setting.
+        <div style="font-size: 0.7rem; color: var(--text-muted); opacity: 0.8; text-align: left; line-height: 1.3;">
+          Saves active tool, theme, & sound.
         </div>
       </div>
 
       <div class="app-meta-footer">
-        <span>V1.1.0 (09-28-2026)</span>
+        <span>V1.4.0 (09-28-2026)</span>
       </div>
     </div>
   </nav>
 
   <main>
-    <!-- Countdown View -->
-    <section id="view-countdown" class="timer-view">
-      <div class="stepper-deck">
-        <div class="stepper">
-          <button class="stepper-btn" onclick="stepCountdown(3600)">▲</button>
-          <span class="stepper-label">Hr</span>
-          <button class="stepper-btn" onclick="stepCountdown(-3600)">▼</button>
-        </div>
-        <div class="stepper">
-          <button class="stepper-btn" onclick="stepCountdown(60)">▲</button>
-          <span class="stepper-label">Min</span>
-          <button class="stepper-btn" onclick="stepCountdown(-60)">▼</button>
-        </div>
-        <div class="stepper">
-          <button class="stepper-btn" onclick="stepCountdown(5)">▲</button>
-          <span class="stepper-label">Sec</span>
-          <button class="stepper-btn" onclick="stepCountdown(-5)">▼</button>
-        </div>
-      </div>
-
-      <div class="display-box">
-        <div class="timer-digits" id="cd-display">05:00</div>
-      </div>
-
-      <div class="control-deck">
-        <button class="action-btn btn-start" id="cd-start" onclick="toggleCountdown()">Start</button>
-        <button class="action-btn btn-reset" onclick="resetCountdown()">Reset</button>
-        <button class="toggle-pill-btn" id="cd-ms-toggle" onclick="toggleMs('cd')">Whole Second</button>
-      </div>
-
-      <div class="preset-multi-row" id="cd-presets"></div>
-    </section>
-
-    <!-- Turn Timer View -->
-    <section id="view-turn" class="timer-view">
-      <div class="turn-config-strip">
-        <div class="turn-selector-card">
-          <div class="turn-selector-info">
-            <span class="turn-selector-label">Number of Turns</span>
-            <span class="turn-selector-count" id="total-turns-val">4</span>
+    <!-- 1. Seat Selector (Default Active) -->
+    <section id="view-seat-picker" class="tool-view active">
+      <div class="top-config-strip">
+        <div class="config-card">
+          <div class="config-card-info">
+            <span class="config-card-label">Seats Per Group</span>
+            <span class="config-card-count" id="seat-count-val">4</span>
           </div>
-          <div class="turn-selector-stepper">
-            <button class="turn-stepper-btn" onclick="adjustTurns(1)">▲</button>
-            <button class="turn-stepper-btn" onclick="adjustTurns(-1)">▼</button>
-          </div>
-        </div>
-
-        <div class="stepper-deck">
-          <div class="stepper">
-            <button class="stepper-btn" onclick="adjustTurnDuration(3600)">▲</button>
-            <span class="stepper-label">Hr</span>
-            <button class="stepper-btn" onclick="adjustTurnDuration(-3600)">▼</button>
-          </div>
-          <div class="stepper">
-            <button class="stepper-btn" onclick="adjustTurnDuration(60)">▲</button>
-            <span class="stepper-label">Min</span>
-            <button class="stepper-btn" onclick="adjustTurnDuration(-60)">▼</button>
-          </div>
-          <div class="stepper">
-            <button class="stepper-btn" onclick="adjustTurnDuration(5)">▲</button>
-            <span class="stepper-label">Sec</span>
-            <button class="stepper-btn" onclick="adjustTurnDuration(-5)">▼</button>
+          <div class="config-stepper">
+            <button class="config-stepper-btn" onclick="adjustSeatCount(1)">▲</button>
+            <button class="config-stepper-btn" onclick="adjustSeatCount(-1)">▼</button>
           </div>
         </div>
       </div>
 
       <div class="display-box">
-        <div class="turn-badge" id="turn-badge">Turn 1 of 4</div>
-        <div class="timer-digits" id="turn-digits">01:00</div>
-        <div class="progress-track">
-          <div class="progress-fill" id="turn-progress"></div>
+        <div class="wheel-stage">
+          <div class="wheel-pointer" id="seat-pointer"></div>
+          <div class="wheel-hub"></div>
+          <canvas id="seat-wheel-canvas" class="wheel-canvas" width="600" height="600"></canvas>
         </div>
+        <div class="display-digits" id="seat-display"></div>
       </div>
 
       <div class="control-deck">
-        <button class="action-btn btn-start" id="turn-start" onclick="toggleTurnTimer()">Start</button>
-        <button class="action-btn btn-reset" onclick="resetTurnTimer()">Reset</button>
-        <button class="toggle-pill-btn" id="turn-ms-toggle" onclick="toggleMs('turn')">Whole Second</button>
+        <button class="action-btn btn-pick" id="seat-spin-btn" onclick="spinSeatWheel()">Spin Seat</button>
+        <button class="action-btn btn-reset" onclick="resetSeatPicker()">Reset Pool</button>
+        <button class="toggle-pill-btn active" id="seat-repeat-toggle" onclick="toggleNoRepeat('seat')">No Repeat: ON</button>
       </div>
-
-      <div class="preset-multi-row" id="turn-presets"></div>
     </section>
 
-    <!-- Visual Timer View -->
-    <section id="view-visual" class="timer-view">
-      <div class="stepper-deck">
-        <div class="stepper">
-          <button class="stepper-btn" onclick="stepVisualDuration(3600)">▲</button>
-          <span class="stepper-label">Hr</span>
-          <button class="stepper-btn" onclick="stepVisualDuration(-3600)">▼</button>
-        </div>
-        <div class="stepper">
-          <button class="stepper-btn" onclick="stepVisualDuration(60)">▲</button>
-          <span class="stepper-label">Min</span>
-          <button class="stepper-btn" onclick="stepVisualDuration(-60)">▼</button>
-        </div>
-        <div class="stepper">
-          <button class="stepper-btn" onclick="stepVisualDuration(10)">▲</button>
-          <span class="stepper-label">Sec</span>
-          <button class="stepper-btn" onclick="stepVisualDuration(-10)">▼</button>
+    <!-- 2. Partner Selector -->
+    <section id="view-partner-picker" class="tool-view">
+      <div class="top-config-strip">
+        <div class="config-card">
+          <div class="config-card-info">
+            <span class="config-card-label">Wheel Wedges</span>
+            <span class="config-card-count" id="partner-wedge-val">8</span>
+          </div>
+          <div class="config-stepper">
+            <button class="config-stepper-btn" onclick="adjustPartnerWedges(2)">▲</button>
+            <button class="config-stepper-btn" onclick="adjustPartnerWedges(-2)">▼</button>
+          </div>
         </div>
       </div>
 
-      <div class="display-box" id="vis-display-box">
-        <div class="visual-stage">
-          <div class="pie-wheel" id="pie-wheel"></div>
-          <div class="visual-bar-wrap" id="visual-bar-wrap">
-            <div class="visual-bar-fill" id="visual-bar-fill"></div>
+      <div class="display-box">
+        <div class="wheel-stage">
+          <div class="wheel-pointer" id="partner-pointer"></div>
+          <div class="wheel-hub"></div>
+          <canvas id="partner-wheel-canvas" class="wheel-canvas" width="600" height="600"></canvas>
+        </div>
+        <div class="display-digits" id="partner-display"></div>
+      </div>
+
+      <div class="control-deck">
+        <button class="action-btn btn-pick" id="partner-spin-btn" onclick="spinPartnerWheel()">Spin Partner</button>
+        <button class="toggle-pill-btn" onclick="togglePartnerFlipMode()" id="partner-mode-pill">Mode: Random Spin</button>
+      </div>
+    </section>
+
+    <!-- 3. Seat Sequencer -->
+    <section id="view-seat-seq" class="tool-view">
+      <div class="top-config-strip">
+        <div class="config-card">
+          <div class="config-card-info">
+            <span class="config-card-label">Seats to Order</span>
+            <span class="config-card-count" id="seat-seq-count-val">4</span>
           </div>
-          <div class="visual-time-text" id="visual-time">03:00</div>
+          <div class="config-stepper">
+            <button class="config-stepper-btn" onclick="adjustSeqSeatCount(1)">▲</button>
+            <button class="config-stepper-btn" onclick="adjustSeqSeatCount(-1)">▼</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="display-box">
+        <div class="sequence-container" id="seat-seq-deck"></div>
+      </div>
+
+      <div class="control-deck">
+        <button class="action-btn btn-pick" id="seat-seq-btn" onclick="runSeatShellGame()">Shuffle Order</button>
+        <button class="action-btn btn-reset" onclick="resetSeatSequence()">Reset</button>
+      </div>
+    </section>
+
+    <!-- 4. Team Selector -->
+    <section id="view-team-picker" class="tool-view">
+      <div class="top-config-strip">
+        <div class="config-card">
+          <div class="config-card-info">
+            <span class="config-card-label">Teams Count</span>
+            <span class="config-card-count" id="team-count-val">8</span>
+          </div>
+          <div class="config-stepper">
+            <button class="config-stepper-btn" onclick="adjustTeamCount(1)">▲</button>
+            <button class="config-stepper-btn" onclick="adjustTeamCount(-1)">▼</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="display-box">
+        <div class="wheel-stage">
+          <div class="wheel-pointer" id="team-pointer"></div>
+          <div class="wheel-hub"></div>
+          <canvas id="team-wheel-canvas" class="wheel-canvas" width="600" height="600"></canvas>
+        </div>
+        <div class="display-digits" id="team-display"></div>
+      </div>
+
+      <div class="control-deck">
+        <button class="action-btn btn-pick" id="team-spin-btn" onclick="spinTeamWheel()">Spin Wheel</button>
+        <button class="action-btn btn-reset" onclick="resetTeamPicker()">Reset Pool</button>
+        <button class="toggle-pill-btn active" id="team-repeat-toggle" onclick="toggleNoRepeat('team')">No Repeat: ON</button>
+      </div>
+    </section>
+
+    <!-- 5. Team & Student (Dual Independent Spinners) -->
+    <section id="view-dual-picker" class="tool-view">
+      <div class="top-config-strip">
+        <div class="config-card">
+          <div class="config-card-info">
+            <span class="config-card-label">Teams Count</span>
+            <span class="config-card-count" id="dual-team-count-val">8</span>
+          </div>
+          <div class="config-stepper">
+            <button class="config-stepper-btn" onclick="adjustDualTeamCount(1)">▲</button>
+            <button class="config-stepper-btn" onclick="adjustDualTeamCount(-1)">▼</button>
+          </div>
+        </div>
+
+        <div class="config-card">
+          <div class="config-card-info">
+            <span class="config-card-label">Seats Per Group</span>
+            <span class="config-card-count" id="dual-seat-count-val">4</span>
+          </div>
+          <div class="config-stepper">
+            <button class="config-stepper-btn" onclick="adjustDualSeatCount(1)">▲</button>
+            <button class="config-stepper-btn" onclick="adjustDualSeatCount(-1)">▼</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="display-box">
+        <div class="dual-spinner-stage">
+          <!-- Left: Team Spinner -->
+          <div class="dual-spinner-col">
+            <div class="dual-spinner-title">Team</div>
+            <div class="wheel-stage">
+              <div class="wheel-pointer" id="dual-team-pointer"></div>
+              <div class="wheel-hub"></div>
+              <canvas id="dual-team-wheel-canvas" class="wheel-canvas" width="600" height="600"></canvas>
+            </div>
+            <div class="dual-display-val" id="dual-team-display"></div>
+          </div>
+
+          <!-- Right: Student Seat Spinner -->
+          <div class="dual-spinner-col">
+            <div class="dual-spinner-title">Student Seat</div>
+            <div class="wheel-stage">
+              <div class="wheel-pointer" id="dual-seat-pointer"></div>
+              <div class="wheel-hub"></div>
+              <canvas id="dual-seat-wheel-canvas" class="wheel-canvas" width="600" height="600"></canvas>
+            </div>
+            <div class="dual-display-val" id="dual-seat-display"></div>
+          </div>
         </div>
       </div>
 
       <div class="control-deck">
-        <button class="action-btn btn-start" id="vis-start" onclick="toggleVisualTimer()">Start</button>
-        <button class="action-btn btn-reset" onclick="resetVisualTimer()">Reset</button>
-        <button class="toggle-pill-btn" id="vis-chart-mode" onclick="toggleChartMode()">Mode: Pie</button>
-        <button class="toggle-pill-btn" id="vis-ms-toggle" onclick="toggleMs('vis')">Whole Second</button>
+        <button class="action-btn btn-pick" id="dual-team-spin-btn" onclick="spinDualTeamWheel()">Spin Team</button>
+        <button class="action-btn btn-pick" id="dual-seat-spin-btn" onclick="spinDualSeatWheel()">Spin Student</button>
+        <button class="action-btn btn-reset" onclick="resetDualPicker()">Reset Both</button>
+        <button class="toggle-pill-btn active" id="dual-repeat-toggle" onclick="toggleNoRepeat('dual')">Team No Repeat: ON</button>
+      </div>
+    </section>
+
+    <!-- 6. Team Sequencer -->
+    <section id="view-team-seq" class="tool-view">
+      <div class="top-config-strip">
+        <div class="config-card">
+          <div class="config-card-info">
+            <span class="config-card-label">Teams to Order</span>
+            <span class="config-card-count" id="team-seq-count-val">8</span>
+          </div>
+          <div class="config-stepper">
+            <button class="config-stepper-btn" onclick="adjustSeqTeamCount(1)">▲</button>
+            <button class="config-stepper-btn" onclick="adjustSeqTeamCount(-1)">▼</button>
+          </div>
+        </div>
       </div>
 
-      <div class="preset-multi-row" id="vis-presets"></div>
+      <div class="display-box">
+        <div class="sequence-container" id="team-seq-deck"></div>
+      </div>
+
+      <div class="control-deck">
+        <button class="action-btn btn-pick" id="team-seq-btn" onclick="runTeamShellGame()">Shuffle Order</button>
+        <button class="action-btn btn-reset" onclick="resetTeamSequence()">Reset</button>
+      </div>
     </section>
   </main>
 
-  <!-- Theme Selection Modal Overlay -->
+  <!-- Consolidated Main Settings Modal -->
+  <div class="modal-backdrop" id="main-settings-modal" onclick="closeModalOnBackdrop(event, 'main-settings-modal')">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title">App Settings</div>
+        <button class="modal-close-btn" onclick="closeModal('main-settings-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="settings-row">
+          <div class="settings-row-header">Theme & Visual Font</div>
+          <button class="modal-trigger-btn" onclick="openThemeModal()">
+            <span>Visual Theme</span>
+            <span class="modal-trigger-val" id="theme-btn-val">Default Dark</span>
+          </button>
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-row-header">Chime Sound Effect</div>
+          <button class="modal-trigger-btn" onclick="openChimeModal()">
+            <span>Chime Sound</span>
+            <span class="modal-trigger-val" id="chime-btn-val">Bell Toll</span>
+          </button>
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-row-header">Wheel Spin Speed</div>
+          <button class="modal-trigger-btn" onclick="cycleSpinSpeed()">
+            <span>Animation Speed</span>
+            <span class="modal-trigger-val" id="speed-btn-val">Normal (3s)</span>
+          </button>
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-row-header">
+            <span>Volume</span>
+            <span id="vol-label">25%</span>
+          </div>
+          <input type="range" class="volume-slider" id="vol-slider" min="0" max="100" value="25" oninput="updateVolume(this.value)">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Theme Selection Modal -->
   <div class="modal-backdrop" id="theme-modal" onclick="closeModalOnBackdrop(event, 'theme-modal')">
     <div class="modal-dialog">
       <div class="modal-header">
         <div class="modal-title">Choose Theme & Font</div>
         <button class="modal-close-btn" onclick="closeModal('theme-modal')">✕</button>
       </div>
-      <div class="modal-body" id="theme-tile-grid"></div>
+      <div class="modal-body modal-grid-body" id="theme-tile-grid"></div>
     </div>
   </div>
 
-  <!-- Sound Selection Modal Overlay -->
+  <!-- Sound Selection Modal -->
   <div class="modal-backdrop" id="chime-modal" onclick="closeModalOnBackdrop(event, 'chime-modal')">
     <div class="modal-dialog">
       <div class="modal-header">
         <div class="modal-title">Choose Chime Sound</div>
         <button class="modal-close-btn" onclick="closeModal('chime-modal')">✕</button>
       </div>
-      <div class="modal-body" id="chime-tile-grid"></div>
+      <div class="modal-body modal-grid-body" id="chime-tile-grid"></div>
     </div>
   </div>
 
   <script>
-    /* Web Worker Heartbeat */
-    const workerBlob = new Blob([`
-      let intervalId = null;
-      self.onmessage = function(e) {
-        if (e.data === 'start') {
-          if (!intervalId) {
-            intervalId = setInterval(() => self.postMessage('tick'), 100);
-          }
-        } else if (e.data === 'stop') {
-          clearInterval(intervalId);
-          intervalId = null;
-        }
-      };
-    `], { type: 'application/javascript' });
-    const timerWorker = new Worker(URL.createObjectURL(workerBlob));
-
-    /* Sidebar Drawer Controller */
+    /* Responsive Sidebar Drawer */
     const sidebar = document.getElementById('app-sidebar');
 
     function toggleSidebar() {
@@ -1148,14 +1256,29 @@
       }
     }
 
-    // Auto-close overlay drawer on mobile when switching timers
     function handleMobileNavClick() {
       if (window.innerWidth <= 900) {
         sidebar.classList.remove('expanded-mobile');
       }
     }
 
-    /* Enhanced Web Audio Graph with Compressor & Pre-Gain Stage */
+    function switchView(viewId, eventObj = null) {
+      document.querySelectorAll('.tool-view').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById(`view-${viewId}`).classList.add('active');
+      
+      if (eventObj && eventObj.currentTarget) {
+        eventObj.currentTarget.classList.add('active');
+      } else {
+        const fallbackBtn = document.querySelector(`.nav-btn[onclick*="${viewId}"]`);
+        if (fallbackBtn) fallbackBtn.classList.add('active');
+      }
+      
+      handleMobileNavClick();
+    }
+
+    /* Web Audio Synthesis & Compressor */
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
     const preGainNode = audioCtx.createGain();
@@ -1169,28 +1292,38 @@
     compressorNode.release.setValueAtTime(0.25, audioCtx.currentTime);
 
     const masterGainNode = audioCtx.createGain();
-
     preGainNode.connect(masterGainNode);
     masterGainNode.connect(compressorNode);
     compressorNode.connect(audioCtx.destination);
 
-    let currentVolume = parseFloat(localStorage.getItem('timer_volume') ?? '0.8');
-    let currentChime = localStorage.getItem('timer_chime') ?? 'bell';
-    let currentTheme = localStorage.getItem('timer_theme') ?? 'default';
-    let visualMode = localStorage.getItem('timer_visual_mode') ?? 'pie';
+    let currentVolume = parseFloat(localStorage.getItem('selector_volume') ?? '0.25');
+    let currentChime = localStorage.getItem('selector_chime') ?? 'bell';
+    let currentTheme = localStorage.getItem('selector_theme') ?? 'default';
 
-    // --- URL Parsing for Embeds ---
+    /* Spin Speeds */
+    const spinSpeeds = [
+      { id: 'fast', name: 'Fast (1.8s)', duration: 1800, minTurns: 3 },
+      { id: 'normal', name: 'Normal (3.0s)', duration: 3000, minTurns: 5 },
+      { id: 'slow', name: 'Dramatic (4.5s)', duration: 4500, minTurns: 7 }
+    ];
+    let currentSpeedIndex = parseInt(localStorage.getItem('selector_speed_idx') ?? '1', 10);
+
+    /* --- URL Parsing for Embeds --- */
     const urlParams = new URLSearchParams(window.location.search);
     const isEmbedded = urlParams.get('embed') === 'true';
-    let startupTimer = 'countdown';
+    let startupView = 'seat-picker';
 
     if (isEmbedded) {
       document.body.classList.add('is-embedded');
-      // Override saved settings if provided in URL
       if (urlParams.get('theme')) currentTheme = urlParams.get('theme');
       if (urlParams.get('chime')) currentChime = urlParams.get('chime');
-      if (urlParams.get('type')) startupTimer = urlParams.get('type');
-      if (urlParams.get('vismode')) visualMode = urlParams.get('vismode');
+      if (urlParams.get('type')) startupView = urlParams.get('type');
+    }
+
+    function cycleSpinSpeed() {
+      currentSpeedIndex = (currentSpeedIndex + 1) % spinSpeeds.length;
+      localStorage.setItem('selector_speed_idx', currentSpeedIndex.toString());
+      document.getElementById('speed-btn-val').innerText = spinSpeeds[currentSpeedIndex].name;
     }
 
     function setMasterGain(vol) {
@@ -1202,25 +1335,22 @@
       currentVolume = val / 100;
       setMasterGain(currentVolume);
       document.getElementById('vol-label').innerText = `${val}%`;
-      localStorage.setItem('timer_volume', currentVolume.toString());
+      localStorage.setItem('selector_volume', currentVolume.toString());
     }
 
     /* Embed Code Generator */
     function copyEmbedCode(btnEl) {
-      // Find which timer is active
-      let activeType = 'countdown';
-      if (document.getElementById('view-turn').classList.contains('active')) activeType = 'turn';
-      if (document.getElementById('view-visual').classList.contains('active')) activeType = 'visual';
+      let activeType = 'seat-picker';
+      document.querySelectorAll('.tool-view').forEach(el => {
+        if (el.classList.contains('active')) {
+          activeType = el.id.replace('view-', '');
+        }
+      });
 
-      const baseUrl = "https://timers.humblescience.org";
-      let src = `${baseUrl}/?embed=true&type=${activeType}&theme=${currentTheme}&chime=${currentChime}`;
-      
-      // Pass the specific visual mode if generating code for the visual timer
-      if (activeType === 'visual') {
-        src += `&vismode=${visualMode}`;
-      }
+      const baseUrl = window.location.href.split('?')[0]; // Grabs dynamic URL without parameters
+      let src = `${baseUrl}?embed=true&type=${activeType}&theme=${currentTheme}&chime=${currentChime}`;
 
-      const iframe = `<iframe src="${src}" width="100%" height="400px" style="border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"></iframe>`;
+      const iframe = `<iframe src="${src}" width="100%" height="450px" style="border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"></iframe>`;
 
       navigator.clipboard.writeText(iframe).then(() => {
         const originalText = btnEl.innerHTML;
@@ -1229,7 +1359,7 @@
       });
     }
 
-    /* Themes Configuration */
+    /* Theme Definitions */
     const themesList = [
       { id: 'default', name: 'Default Dark', desc: 'Modern System Sans' },
       { id: 'chalkboard', name: 'Classroom Chalkboard', desc: 'Warm Casual Font' },
@@ -1242,8 +1372,9 @@
       { id: 'high-contrast', name: 'High Contrast', desc: 'Bold Accessibility' }
     ];
 
-    /* Chimes Configuration */
+    /* Chime Definitions */
     const chimesList = [
+      { id: 'none', name: 'No Sound', desc: 'Silent (Spinner Ticks Only)' },
       { id: 'bell', name: 'Bell Toll', desc: 'Two Deep Church Chimes' },
       { id: 'harp', name: 'Harp Chime', desc: 'Ascending Glissando' },
       { id: 'beep', name: 'Digital Beep', desc: '3 Electronic Pulses' },
@@ -1254,7 +1385,166 @@
       { id: 'sonar', name: 'Radar Ping', desc: 'Submarine Echo' }
     ];
 
+    /* Restored Original 900 Hz Tone (Louder Relative to Chime) */
+    function playTick() {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(900, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.95, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.035);
+      osc.connect(gain);
+      gain.connect(preGainNode);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.035);
+    }
+
+    function playSoundBell() {
+      for (let i = 0; i < 2; i++) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime + (i * 0.45));
+        gain.gain.setValueAtTime(0.85, audioCtx.currentTime + (i * 0.45));
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + (i * 0.45) + 1.2);
+        osc.connect(gain);
+        gain.connect(preGainNode);
+        osc.start(audioCtx.currentTime + (i * 0.45));
+        osc.stop(audioCtx.currentTime + (i * 0.45) + 1.2);
+      }
+    }
+
+    function playSoundHarp() {
+      const notes = [440, 554.37, 659.25, 880, 1108.73, 1318.51];
+      notes.forEach((freq, idx) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.06);
+        gain.gain.setValueAtTime(0.75, audioCtx.currentTime + idx * 0.06);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + idx * 0.06 + 0.9);
+        osc.connect(gain);
+        gain.connect(preGainNode);
+        osc.start(audioCtx.currentTime + idx * 0.06);
+        osc.stop(audioCtx.currentTime + idx * 0.06 + 0.9);
+      });
+    }
+
+    function playSoundBeep() {
+      for (let i = 0; i < 3; i++) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(880, audioCtx.currentTime + (i * 0.15));
+        gain.gain.setValueAtTime(0.35, audioCtx.currentTime + (i * 0.15));
+        gain.gain.setValueAtTime(0.0001, audioCtx.currentTime + (i * 0.15) + 0.1);
+        osc.connect(gain);
+        gain.connect(preGainNode);
+        osc.start(audioCtx.currentTime + (i * 0.15));
+        osc.stop(audioCtx.currentTime + (i * 0.15) + 0.1);
+      }
+    }
+
+    function playSoundMarimba() {
+      const notes = [523.25, 659.25, 783.99, 1046.50];
+      notes.forEach((freq, idx) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.1);
+        gain.gain.setValueAtTime(0.85, audioCtx.currentTime + idx * 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + idx * 0.1 + 0.45);
+        osc.connect(gain);
+        gain.connect(preGainNode);
+        osc.start(audioCtx.currentTime + idx * 0.1);
+        osc.stop(audioCtx.currentTime + idx * 0.1 + 0.45);
+      });
+    }
+
+    function playSoundArcade() {
+      const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99];
+      notes.forEach((freq, idx) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.05);
+        gain.gain.setValueAtTime(0.45, audioCtx.currentTime + idx * 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + idx * 0.05 + 0.2);
+        osc.connect(gain);
+        gain.connect(preGainNode);
+        osc.start(audioCtx.currentTime + idx * 0.05);
+        osc.stop(audioCtx.currentTime + idx * 0.05 + 0.2);
+      });
+    }
+
+    function playSoundZen() {
+      [220, 222, 440].forEach(freq => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.55, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 2.5);
+        osc.connect(gain);
+        gain.connect(preGainNode);
+        osc.start(audioCtx.currentTime);
+        osc.stop(audioCtx.currentTime + 2.5);
+      });
+    }
+
+    function playSoundSchool() {
+      const startTime = audioCtx.currentTime;
+      for (let i = 0; i < 24; i++) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(800 + (i % 2) * 120, startTime + i * 0.045);
+        gain.gain.setValueAtTime(0.45, startTime + i * 0.045);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + i * 0.045 + 0.04);
+        osc.connect(gain);
+        gain.connect(preGainNode);
+        osc.start(startTime + i * 0.045);
+        osc.stop(startTime + i * 0.045 + 0.04);
+      }
+    }
+
+    function playSoundSonar() {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1480, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(1100, audioCtx.currentTime + 1.2);
+      gain.gain.setValueAtTime(0.85, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.8);
+      osc.connect(gain);
+      gain.connect(preGainNode);
+      osc.start(audioCtx.currentTime);
+      osc.stop(audioCtx.currentTime + 1.8);
+    }
+
+    function playSoundById(id) {
+      if (id === 'none') return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      if (id === 'bell') playSoundBell();
+      else if (id === 'harp') playSoundHarp();
+      else if (id === 'beep') playSoundBeep();
+      else if (id === 'marimba') playSoundMarimba();
+      else if (id === 'arcade') playSoundArcade();
+      else if (id === 'zen') playSoundZen();
+      else if (id === 'school') playSoundSchool();
+      else if (id === 'sonar') playSoundSonar();
+    }
+
+    function playChime() {
+      playSoundById(currentChime);
+    }
+
     /* Modals Control */
+    function openMainSettingsModal() {
+      document.getElementById('main-settings-modal').classList.add('open');
+    }
+
     function openThemeModal() {
       renderThemeTiles();
       document.getElementById('theme-modal').classList.add('open');
@@ -1308,7 +1598,7 @@
         tile.innerHTML = `
           <div class="touch-tile-name">${c.name}</div>
           <div class="touch-tile-desc">${c.desc}</div>
-          <button class="touch-tile-preview" onclick="previewSound('${c.id}')">Test</button>
+          ${c.id !== 'none' ? `<button class="touch-tile-preview" onclick="playSoundById('${c.id}')">Test</button>` : ''}
         `;
         grid.appendChild(tile);
       });
@@ -1317,562 +1607,677 @@
     function updateTheme(val) {
       currentTheme = val;
       document.body.setAttribute('data-theme', val);
-      localStorage.setItem('timer_theme', val);
+      localStorage.setItem('selector_theme', val);
       const match = themesList.find(t => t.id === val);
       if (match) document.getElementById('theme-btn-val').innerText = match.name;
-      updateVisualUI();
+      drawWheel(seatCanvas, seatItems, seatCurrentAngle, seatNoRepeat ? seatPool : null);
+      drawWheel(partnerCanvas, partnerItems, partnerCurrentAngle);
+      drawWheel(teamCanvas, teamItems, teamCurrentAngle, teamNoRepeat ? teamPool : null);
+      drawWheel(dualTeamCanvas, dualTeamItems, dualTeamCurrentAngle, dualNoRepeat ? dualTeamPool : null);
+      drawWheel(dualSeatCanvas, dualSeatItems, dualSeatCurrentAngle, null);
     }
 
     function updateChime(val) {
       currentChime = val;
-      localStorage.setItem('timer_chime', val);
+      localStorage.setItem('selector_chime', val);
       const match = chimesList.find(c => c.id === val);
       if (match) document.getElementById('chime-btn-val').innerText = match.name;
     }
 
-    function previewSound(chimeId) {
-      playSoundById(chimeId);
-    }
-
-    /* Sound Synthesizers */
-    function playSoundBell() {
-      for (let i = 0; i < 2; i++) {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime + (i * 0.6));
-        gain.gain.setValueAtTime(0.85, audioCtx.currentTime + (i * 0.6));
-        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + (i * 0.6) + 1.4);
-        osc.connect(gain);
-        gain.connect(preGainNode);
-        osc.start(audioCtx.currentTime + (i * 0.6));
-        osc.stop(audioCtx.currentTime + (i * 0.6) + 1.4);
+    function shuffleArray(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
       }
+      return a;
     }
 
-    function playSoundHarp() {
-      const notes = [440, 554.37, 659.25, 880, 1108.73, 1318.51];
-      notes.forEach((freq, idx) => {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.08);
-        gain.gain.setValueAtTime(0.75, audioCtx.currentTime + idx * 0.08);
-        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + idx * 0.08 + 1.2);
-        osc.connect(gain);
-        gain.connect(preGainNode);
-        osc.start(audioCtx.currentTime + idx * 0.08);
-        osc.stop(audioCtx.currentTime + idx * 0.08 + 1.2);
-      });
-    }
-
-    function playSoundBeep() {
-      for (let i = 0; i < 3; i++) {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'square';
-        osc.frequency.setValueAtTime(880, audioCtx.currentTime + (i * 0.2));
-        gain.gain.setValueAtTime(0.35, audioCtx.currentTime + (i * 0.2));
-        gain.gain.setValueAtTime(0.0001, audioCtx.currentTime + (i * 0.2) + 0.12);
-        osc.connect(gain);
-        gain.connect(preGainNode);
-        osc.start(audioCtx.currentTime + (i * 0.2));
-        osc.stop(audioCtx.currentTime + (i * 0.2) + 0.12);
-      }
-    }
-
-    function playSoundMarimba() {
-      const notes = [523.25, 659.25, 783.99, 1046.50];
-      notes.forEach((freq, idx) => {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.12);
-        gain.gain.setValueAtTime(0.85, audioCtx.currentTime + idx * 0.12);
-        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + idx * 0.12 + 0.5);
-        osc.connect(gain);
-        gain.connect(preGainNode);
-        osc.start(audioCtx.currentTime + idx * 0.12);
-        osc.stop(audioCtx.currentTime + idx * 0.12 + 0.5);
-      });
-    }
-
-    function playSoundArcade() {
-      const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99];
-      notes.forEach((freq, idx) => {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'square';
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.06);
-        gain.gain.setValueAtTime(0.45, audioCtx.currentTime + idx * 0.06);
-        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + idx * 0.06 + 0.2);
-        osc.connect(gain);
-        gain.connect(preGainNode);
-        osc.start(audioCtx.currentTime + idx * 0.06);
-        osc.stop(audioCtx.currentTime + idx * 0.06 + 0.2);
-      });
-    }
-
-    function playSoundZen() {
-      [220, 222, 440].forEach(freq => {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.55, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 3.5);
-        osc.connect(gain);
-        gain.connect(preGainNode);
-        osc.start(audioCtx.currentTime);
-        osc.stop(audioCtx.currentTime + 3.5);
-      });
-    }
-
-    function playSoundSchool() {
-      const startTime = audioCtx.currentTime;
-      for (let i = 0; i < 28; i++) {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(800 + (i % 2) * 120, startTime + i * 0.045);
-        gain.gain.setValueAtTime(0.45, startTime + i * 0.045);
-        gain.gain.exponentialRampToValueAtTime(0.001, startTime + i * 0.045 + 0.04);
-        osc.connect(gain);
-        gain.connect(preGainNode);
-        osc.start(startTime + i * 0.045);
-        osc.stop(startTime + i * 0.045 + 0.04);
-      }
-    }
-
-    function playSoundSonar() {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(1480, audioCtx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(1100, audioCtx.currentTime + 1.2);
-      gain.gain.setValueAtTime(0.85, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 2.0);
-      osc.connect(gain);
-      gain.connect(preGainNode);
-      osc.start(audioCtx.currentTime);
-      osc.stop(audioCtx.currentTime + 2.0);
-    }
-
-    function playSoundById(id) {
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      if (id === 'bell') playSoundBell();
-      else if (id === 'harp') playSoundHarp();
-      else if (id === 'beep') playSoundBeep();
-      else if (id === 'marimba') playSoundMarimba();
-      else if (id === 'arcade') playSoundArcade();
-      else if (id === 'zen') playSoundZen();
-      else if (id === 'school') playSoundSchool();
-      else if (id === 'sonar') playSoundSonar();
-    }
-
-    function playAlertChime() {
-      playSoundById(currentChime);
-    }
-
-    function checkWorkerActivity() {
-      if (cdRunning || turnRunning || visRunning) {
-        timerWorker.postMessage('start');
-      } else {
-        timerWorker.postMessage('stop');
-      }
-    }
-
-    timerWorker.onmessage = function() {
-      const now = Date.now();
-      if (cdRunning) tickCountdown(now);
-      if (turnRunning) tickTurn(now);
-      if (visRunning) tickVisual(now);
-    };
-
-    function pauseAllTimers() {
-      if (cdRunning) toggleCountdown();
-      if (turnRunning) toggleTurnTimer();
-      if (visRunning) toggleVisualTimer();
-    }
-
-    function switchTimer(timerId, eventObj = null) {
-      pauseAllTimers();
-      document.querySelectorAll('.timer-view').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-      
-      document.getElementById(`view-${timerId}`).classList.add('active');
-      
-      if (eventObj && eventObj.currentTarget) {
-        eventObj.currentTarget.classList.add('active');
-      } else {
-        const fallbackBtn = document.querySelector(`.nav-btn[onclick*="${timerId}"]`);
-        if (fallbackBtn) fallbackBtn.classList.add('active');
-      }
-      
-      handleMobileNavClick();
-    }
-
-    function formatTime(totalMs, showMs = false) {
-      if (totalMs < 0) totalMs = 0;
-      const totalSec = Math.floor(totalMs / 1000);
-      const h = Math.floor(totalSec / 3600);
-      const m = Math.floor((totalSec % 3600) / 60);
-      const s = Math.floor(totalSec % 60);
-      const cs = Math.floor((totalMs % 1000) / 10);
-
-      let base = (h > 0)
-        ? `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
-        : `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-
-      return showMs ? `${base}.${String(cs).padStart(2, '0')}` : base;
-    }
-
-    const presetTimes = [
-      { label: '15s', sec: 15 },
-      { label: '30s', sec: 30 },
-      { label: '45s', sec: 45 },
-      { label: '1m', sec: 60 },
-      { label: '2m', sec: 120 },
-      { label: '3m', sec: 180 },
-      { label: '4m', sec: 240 },
-      { label: '5m', sec: 300 },
-      { label: '10m', sec: 600 },
-      { label: '15m', sec: 900 },
-      { label: '20m', sec: 1200 },
-      { label: '25m', sec: 1500 },
-      { label: '30m', sec: 1800 },
-      { label: '45m', sec: 2700 },
-      { label: '60m', sec: 3600 }
+    /* WHEEL ENGINE */
+    const wheelPalette = [
+      '#ef4444', '#f59e0b', '#10b981', '#06b6d4', 
+      '#3b82f6', '#8b5cf6', '#ec4899', '#f97316', '#14b8a6'
     ];
 
-    function createPresetButtons(containerId, onSelectCallback) {
-      const container = document.getElementById(containerId);
-      presetTimes.forEach(p => {
-        const btn = document.createElement('button');
-        btn.className = 'preset-btn';
-        btn.innerText = p.label;
-        btn.onclick = () => onSelectCallback(p.sec);
-        container.appendChild(btn);
+    function drawWheel(canvas, items, rotationAngle = 0, activePool = null) {
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+      const radius = w / 2;
+      const total = items.length;
+      const sliceAngle = (2 * Math.PI) / total;
+
+      ctx.clearRect(0, 0, w, h);
+      ctx.save();
+      ctx.translate(radius, radius);
+      ctx.rotate(rotationAngle);
+
+      items.forEach((item, i) => {
+        const start = i * sliceAngle;
+        const end = start + sliceAngle;
+        const isExhausted = activePool !== null && !activePool.includes(item.id);
+
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.arc(0, 0, radius - 6, start, end);
+        ctx.closePath();
+
+        if (isExhausted) {
+          ctx.fillStyle = '#11151f';
+        } else {
+          ctx.fillStyle = item.color || wheelPalette[i % wheelPalette.length];
+        }
+        ctx.fill();
+
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = '#1e2433';
+        ctx.stroke();
+
+        ctx.save();
+        ctx.rotate(start + sliceAngle / 2);
+        ctx.textAlign = 'right';
+        ctx.font = total > 10 ? 'bold 28px system-ui, sans-serif' : 'bold 36px system-ui, sans-serif';
+
+        if (isExhausted) {
+          ctx.fillStyle = '#475569';
+          ctx.shadowBlur = 0;
+        } else {
+          ctx.fillStyle = '#ffffff';
+          ctx.shadowColor = 'rgba(0,0,0,0.6)';
+          ctx.shadowBlur = 8;
+        }
+
+        ctx.fillText(item.label, radius - 35, 12);
+        ctx.restore();
+      });
+
+      ctx.restore();
+    }
+
+    function animateWheelSpin(canvas, pointerEl, items, currentAngle, targetIndex, activePool, onComplete) {
+      const total = items.length;
+      const sliceAngle = (2 * Math.PI) / total;
+      
+      const targetCenterAngle = (targetIndex * sliceAngle) + (sliceAngle / 2);
+      const desiredFinalAngleMod = (1.5 * Math.PI - targetCenterAngle) % (2 * Math.PI);
+      const normalizedFinalAngle = (desiredFinalAngleMod + 2 * Math.PI) % (2 * Math.PI);
+
+      const currentMod = currentAngle % (2 * Math.PI);
+      const deltaToFinal = (normalizedFinalAngle - currentMod + 2 * Math.PI) % (2 * Math.PI);
+      
+      const speedConfig = spinSpeeds[currentSpeedIndex];
+      const extraSpins = speedConfig.minTurns * 2 * Math.PI;
+      const totalDelta = deltaToFinal + extraSpins;
+      const startAngle = currentAngle;
+
+      const duration = speedConfig.duration;
+      const startTime = performance.now();
+      let lastSlicePassed = Math.floor((startAngle / sliceAngle));
+
+      function frame(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(1, elapsed / duration);
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        const currentRot = startAngle + (totalDelta * easeOut);
+
+        drawWheel(canvas, items, currentRot, activePool);
+
+        const currentSlice = Math.floor((currentRot / sliceAngle));
+        if (currentSlice !== lastSlicePassed) {
+          playTick();
+          pointerEl.classList.add('kick');
+          setTimeout(() => pointerEl.classList.remove('kick'), 45);
+          lastSlicePassed = currentSlice;
+        }
+
+        if (progress < 1) {
+          requestAnimationFrame(frame);
+        } else {
+          pointerEl.classList.remove('kick');
+          onComplete(startAngle + totalDelta);
+        }
+      }
+      requestAnimationFrame(frame);
+    }
+
+    /* Seat Color Mapping */
+    const seatColorMap = {
+      1: '#f59e0b',
+      2: '#10b981',
+      3: '#3b82f6',
+      4: '#ef4444',
+      5: '#8b5cf6',
+      6: '#06b6d4'
+    };
+
+    function buildSeatItems(count) {
+      const items = [];
+      for (let r = 0; r < 2; r++) {
+        for (let s = 1; s <= count; s++) {
+          items.push({
+            label: `Seat ${s}`,
+            id: s,
+            color: seatColorMap[s] || wheelPalette[(s - 1) % wheelPalette.length]
+          });
+        }
+      }
+      return items;
+    }
+
+    /* 1. Seat Selector Logic */
+    let seatCount = 4;
+    let seatNoRepeat = true;
+    let seatPool = [1, 2, 3, 4];
+    let seatCurrentAngle = 0;
+    let seatSpinning = false;
+    const seatCanvas = document.getElementById('seat-wheel-canvas');
+    let seatItems = buildSeatItems(seatCount);
+
+    function initSeatPool() {
+      seatPool = Array.from({ length: seatCount }, (_, i) => i + 1);
+      seatItems = buildSeatItems(seatCount);
+      drawWheel(seatCanvas, seatItems, seatCurrentAngle, seatNoRepeat ? seatPool : null);
+    }
+
+    function adjustSeatCount(delta) {
+      if (seatSpinning) return;
+      const nextCount = seatCount + delta;
+      if (nextCount >= 3 && nextCount <= 6) {
+        seatCount = nextCount;
+        document.getElementById('seat-count-val').innerText = seatCount;
+        initSeatPool();
+        document.getElementById('seat-display').innerText = '';
+      }
+    }
+
+    function spinSeatWheel() {
+      if (seatSpinning) return;
+      if (seatNoRepeat && seatPool.length === 0) {
+        initSeatPool();
+      }
+
+      seatSpinning = true;
+      document.getElementById('seat-spin-btn').disabled = true;
+      document.getElementById('seat-display').classList.remove('celebrate');
+      document.getElementById('seat-display').innerText = '...';
+
+      const pool = seatNoRepeat ? seatPool : Array.from({ length: seatCount }, (_, i) => i + 1);
+      const chosenSeat = pool[Math.floor(Math.random() * pool.length)];
+
+      const matchingIndices = seatItems
+        .map((item, idx) => item.id === chosenSeat ? idx : -1)
+        .filter(idx => idx !== -1);
+      const targetIndex = matchingIndices[Math.floor(Math.random() * matchingIndices.length)];
+
+      const pointer = document.getElementById('seat-pointer');
+      animateWheelSpin(seatCanvas, pointer, seatItems, seatCurrentAngle, targetIndex, seatNoRepeat ? seatPool : null, (newAngle) => {
+        seatCurrentAngle = newAngle;
+        seatSpinning = false;
+        document.getElementById('seat-spin-btn').disabled = false;
+
+        if (seatNoRepeat) {
+          const idx = seatPool.indexOf(chosenSeat);
+          if (idx !== -1) seatPool.splice(idx, 1);
+        }
+
+        const disp = document.getElementById('seat-display');
+        disp.innerText = `Seat ${chosenSeat}`;
+        disp.classList.add('celebrate');
+        
+        drawWheel(seatCanvas, seatItems, seatCurrentAngle, seatNoRepeat ? seatPool : null);
+        playChime();
       });
     }
 
-    const msState = {
-      cd: localStorage.getItem('timer_ms_cd') === 'true',
-      turn: localStorage.getItem('timer_ms_turn') === 'true',
-      vis: localStorage.getItem('timer_ms_vis') === 'true'
-    };
-
-    function updateTogglePillText(key) {
-      const btn = document.getElementById(`${key}-ms-toggle`);
-      btn.innerText = msState[key] ? 'Precise' : 'Whole Second';
-      btn.classList.toggle('active', msState[key]);
+    function resetSeatPicker() {
+      if (seatSpinning) return;
+      initSeatPool();
+      document.getElementById('seat-display').innerText = '';
     }
 
-    function initMsButtons() {
-      ['cd', 'turn', 'vis'].forEach(key => updateTogglePillText(key));
-    }
-
-    function toggleMs(timerKey) {
-      msState[timerKey] = !msState[timerKey];
-      localStorage.setItem(`timer_ms_${timerKey}`, msState[timerKey]);
-      updateTogglePillText(timerKey);
-
-      if (timerKey === 'cd') updateCdDisplay();
-      if (timerKey === 'turn') updateTurnUI();
-      if (timerKey === 'vis') updateVisualUI();
-    }
-
-    /* 1. Countdown */
-    let cdDurationMs = 300000, cdTimeLeftMs = 300000;
-    let cdRunning = false, cdLastTime = null;
-
-    function updateCdDisplay() {
-      const text = formatTime(cdTimeLeftMs, msState.cd);
-      const display = document.getElementById('cd-display');
-      display.innerText = text;
-      // Pass the exact character length to CSS so calc() scales it perfectly
-      display.style.setProperty('--char-count', text.length);
-    }
-    
-    function stepCountdown(deltaSec) {
-      if (cdRunning) return;
-      cdDurationMs = Math.max(5000, cdDurationMs + deltaSec * 1000);
-      cdTimeLeftMs = cdDurationMs;
-      updateCdDisplay();
-    }
-    
-    function loadCountdownPreset(sec) {
-      if (cdRunning) toggleCountdown();
-      cdDurationMs = sec * 1000;
-      cdTimeLeftMs = cdDurationMs;
-      updateCdDisplay();
-      toggleCountdown();
-    }
-    
-    function tickCountdown(now) {
-      if (!cdLastTime) cdLastTime = now;
-      const delta = now - cdLastTime;
-      cdLastTime = now;
-      cdTimeLeftMs -= delta;
-
-      if (cdTimeLeftMs <= 0) {
-        cdTimeLeftMs = 0;
-        cdRunning = false;
-        cdLastTime = null;
-        updateCdDisplay();
-        checkWorkerActivity();
-        playAlertChime();
-        const btn = document.getElementById('cd-start');
-        btn.innerText = 'Start';
-        btn.classList.replace('btn-pause', 'btn-start');
-        return;
+    function toggleNoRepeat(type) {
+      if (type === 'team') {
+        teamNoRepeat = !teamNoRepeat;
+        const btn = document.getElementById('team-repeat-toggle');
+        btn.innerText = `No Repeat: ${teamNoRepeat ? 'ON' : 'OFF'}`;
+        btn.classList.toggle('active', teamNoRepeat);
+        initTeamPool();
+      } else if (type === 'seat') {
+        seatNoRepeat = !seatNoRepeat;
+        const btn = document.getElementById('seat-repeat-toggle');
+        btn.innerText = `No Repeat: ${seatNoRepeat ? 'ON' : 'OFF'}`;
+        btn.classList.toggle('active', seatNoRepeat);
+        initSeatPool();
+      } else if (type === 'dual') {
+        dualNoRepeat = !dualNoRepeat;
+        const btn = document.getElementById('dual-repeat-toggle');
+        btn.innerText = `Team No Repeat: ${dualNoRepeat ? 'ON' : 'OFF'}`;
+        btn.classList.toggle('active', dualNoRepeat);
+        initDualTeamPool();
       }
-      updateCdDisplay();
     }
-    
-    function toggleCountdown() {
-      const btn = document.getElementById('cd-start');
-      if (cdRunning) {
-        cdRunning = false;
-        cdLastTime = null;
-        btn.innerText = 'Resume';
-        btn.classList.replace('btn-pause', 'btn-start');
+
+    /* 2. Partner Selector Logic */
+    let partnerFlipMode = false;
+    let partnerToggleState = 'A';
+    let partnerCurrentAngle = 0;
+    let partnerSpinning = false;
+    let partnerWedgeCount = 8;
+    const partnerCanvas = document.getElementById('partner-wheel-canvas');
+    let partnerItems = [];
+
+    function initPartnerItems() {
+      partnerItems = [];
+      const colorA = '#059669';
+      const colorB = '#d97706';
+      for (let i = 0; i < partnerWedgeCount; i++) {
+        const isA = i % 2 === 0;
+        partnerItems.push({
+          label: isA ? 'A' : 'B',
+          id: isA ? 'A' : 'B',
+          color: isA ? colorA : colorB
+        });
+      }
+      drawWheel(partnerCanvas, partnerItems, partnerCurrentAngle);
+    }
+
+    function adjustPartnerWedges(delta) {
+      if (partnerSpinning) return;
+      const newCount = partnerWedgeCount + delta;
+      if (newCount >= 4 && newCount <= 16) {
+        partnerWedgeCount = newCount;
+        document.getElementById('partner-wedge-val').innerText = partnerWedgeCount;
+        initPartnerItems();
+      }
+    }
+
+    function togglePartnerFlipMode() {
+      partnerFlipMode = !partnerFlipMode;
+      document.getElementById('partner-mode-pill').innerText = partnerFlipMode ? 'Mode: Alternate A/B' : 'Mode: Random Spin';
+      document.getElementById('partner-mode-pill').classList.toggle('active', partnerFlipMode);
+    }
+
+    function spinPartnerWheel() {
+      if (partnerSpinning) return;
+      partnerSpinning = true;
+      document.getElementById('partner-spin-btn').disabled = true;
+      document.getElementById('partner-display').classList.remove('celebrate');
+      document.getElementById('partner-display').innerText = '...';
+
+      let chosen = '';
+      if (partnerFlipMode) {
+        chosen = partnerToggleState;
+        partnerToggleState = (partnerToggleState === 'A') ? 'B' : 'A';
       } else {
-        cdRunning = true;
-        cdLastTime = Date.now();
-        btn.innerText = 'Pause';
-        btn.classList.replace('btn-start', 'btn-pause');
+        chosen = Math.random() < 0.5 ? 'A' : 'B';
       }
-      checkWorkerActivity();
-    }
-    
-    function resetCountdown() {
-      cdRunning = false;
-      cdLastTime = null;
-      checkWorkerActivity();
-      cdTimeLeftMs = cdDurationMs;
-      updateCdDisplay();
-      const btn = document.getElementById('cd-start');
-      btn.innerText = 'Start';
-      btn.classList.replace('btn-pause', 'btn-start');
-    }
 
-    /* 2. Turn Timer */
-    let totalTurns = 4;
-    let currentTurn = 1, turnDurationMs = 60000, turnTimeLeftMs = 60000;
-    let turnRunning = false, turnLastTime = null;
+      const matchingIndices = partnerItems
+        .map((item, idx) => item.id === chosen ? idx : -1)
+        .filter(idx => idx !== -1);
+      const targetIndex = matchingIndices[Math.floor(Math.random() * matchingIndices.length)];
 
-    function updateTurnUI() {
-      const turnsDisplay = (totalTurns === Infinity) ? '∞' : totalTurns;
-      document.getElementById('total-turns-val').innerText = turnsDisplay;
-      document.getElementById('turn-badge').innerText = `Turn ${currentTurn} of ${turnsDisplay}`;
-      
-      const text = formatTime(turnTimeLeftMs, msState.turn);
-      const digits = document.getElementById('turn-digits');
-      digits.innerText = text;
-      // Scale dynamically based on character count
-      digits.style.setProperty('--char-count', text.length);
-      
-      const progress = (turnTimeLeftMs / turnDurationMs) * 100;
-      document.getElementById('turn-progress').style.width = `${Math.max(0, progress)}%`;
+      const pointer = document.getElementById('partner-pointer');
+      animateWheelSpin(partnerCanvas, pointer, partnerItems, partnerCurrentAngle, targetIndex, null, (newAngle) => {
+        partnerCurrentAngle = newAngle;
+        partnerSpinning = false;
+        document.getElementById('partner-spin-btn').disabled = false;
+
+        const disp = document.getElementById('partner-display');
+        disp.innerText = `Partner ${chosen}`;
+        disp.classList.add('celebrate');
+        playChime();
+      });
     }
 
-    function adjustTurns(delta) {
-      if (turnRunning) return;
-      if (delta < 0) {
-        if (totalTurns === 1) {
-          totalTurns = Infinity;
-        } else if (totalTurns !== Infinity) {
-          totalTurns = Math.max(1, totalTurns + delta);
+    /* SHELL GAME SEQUENCER ENGINE */
+    function animateShellGame(deckElement, onComplete) {
+      const cards = Array.from(deckElement.children);
+      if (cards.length === 0) return;
+
+      const totalSwaps = 7;
+      const intervalMs = 160;
+      let swapCount = 0;
+
+      cards.forEach(card => card.classList.add('shell-swapping'));
+
+      const timer = setInterval(() => {
+        const i = Math.floor(Math.random() * cards.length);
+        let j = Math.floor(Math.random() * cards.length);
+        while (j === i && cards.length > 1) {
+          j = Math.floor(Math.random() * cards.length);
         }
-      } else if (delta > 0) {
-        if (totalTurns === Infinity) {
-          totalTurns = 1;
-        } else {
-          totalTurns += delta;
+
+        const cardA = cards[i];
+        const cardB = cards[j];
+
+        const rectA = cardA.getBoundingClientRect();
+        const rectB = cardB.getBoundingClientRect();
+
+        const deltaX_A = rectB.left - rectA.left;
+        const deltaY_A = rectB.top - rectA.top;
+        const deltaX_B = rectA.left - rectB.left;
+        const deltaY_B = rectA.top - rectB.top;
+
+        cardA.style.transform = `translate(${deltaX_A}px, ${deltaY_A}px) scale(1.02)`;
+        cardB.style.transform = `translate(${deltaX_B}px, ${deltaY_B}px) scale(0.98)`;
+        playTick();
+
+        setTimeout(() => {
+          const parent = cardA.parentNode;
+          const siblingA = cardA.nextSibling === cardB ? cardA : cardA.nextSibling;
+          cardB.parentNode.insertBefore(cardA, cardB);
+          parent.insertBefore(cardB, siblingA);
+
+          cardA.style.transform = '';
+          cardB.style.transform = '';
+
+          const updatedCards = Array.from(deckElement.children);
+          for (let k = 0; k < cards.length; k++) {
+            cards[k] = updatedCards[k];
+          }
+        }, intervalMs * 0.85);
+
+        swapCount++;
+        if (swapCount >= totalSwaps) {
+          clearInterval(timer);
+          setTimeout(() => {
+            cards.forEach(c => c.classList.remove('shell-swapping'));
+            onComplete();
+          }, intervalMs + 100);
         }
+      }, intervalMs);
+    }
+
+    /* 3. Seat Sequencer Logic */
+    let seqSeatCount = 4;
+    let seatSeqRunning = false;
+
+    function renderOrderedSeatCards() {
+      const deck = document.getElementById('seat-seq-deck');
+      deck.innerHTML = '';
+      for (let s = 1; s <= seqSeatCount; s++) {
+        const card = document.createElement('div');
+        card.className = 'seq-step-card';
+        card.style.backgroundColor = seatColorMap[s] || wheelPalette[(s - 1) % wheelPalette.length];
+        card.innerHTML = `<div class="seq-step-val">Seat ${s}</div>`;
+        deck.appendChild(card);
       }
-      currentTurn = 1;
-      updateTurnUI();
     }
 
-    function adjustTurnDuration(deltaSec) {
-      if (turnRunning) return;
-      turnDurationMs = Math.max(5000, turnDurationMs + deltaSec * 1000);
-      turnTimeLeftMs = turnDurationMs;
-      updateTurnUI();
+    function adjustSeqSeatCount(delta) {
+      if (seatSeqRunning) return;
+      const next = seqSeatCount + delta;
+      if (next >= 3 && next <= 6) {
+        seqSeatCount = next;
+        document.getElementById('seat-seq-count-val').innerText = seqSeatCount;
+        renderOrderedSeatCards();
+      }
     }
-    
-    function loadTurnPreset(sec) {
-      if (turnRunning) toggleTurnTimer();
-      turnDurationMs = sec * 1000;
-      turnTimeLeftMs = turnDurationMs;
-      updateTurnUI();
-    }
-    
-    function tickTurn(now) {
-      if (!turnLastTime) turnLastTime = now;
-      const delta = now - turnLastTime;
-      turnLastTime = now;
-      turnTimeLeftMs -= delta;
 
-      if (turnTimeLeftMs <= 0) {
-        if (totalTurns === Infinity || currentTurn < totalTurns) {
-          playSoundHarp();
-          currentTurn++;
-          turnTimeLeftMs = turnDurationMs;
-          updateTurnUI();
-        } else {
-          turnTimeLeftMs = 0;
-          turnRunning = false;
-          turnLastTime = null;
-          updateTurnUI();
-          checkWorkerActivity();
-          playAlertChime();
-          const btn = document.getElementById('turn-start');
-          btn.innerText = 'Start';
-          btn.classList.replace('btn-pause', 'btn-start');
+    function runSeatShellGame() {
+      if (seatSeqRunning) return;
+      seatSeqRunning = true;
+      document.getElementById('seat-seq-btn').disabled = true;
+
+      const deck = document.getElementById('seat-seq-deck');
+      if (deck.children.length === 0) {
+        renderOrderedSeatCards();
+      }
+
+      animateShellGame(deck, () => {
+        seatSeqRunning = false;
+        document.getElementById('seat-seq-btn').disabled = false;
+        Array.from(deck.children).forEach(c => c.classList.add('celebrate'));
+        playChime();
+      });
+    }
+
+    function resetSeatSequence() {
+      if (seatSeqRunning) return;
+      renderOrderedSeatCards();
+    }
+
+    /* 4. Team Selector Logic */
+    let teamCount = 8;
+    let teamNoRepeat = true;
+    let teamPool = [];
+    let teamCurrentAngle = 0;
+    let teamSpinning = false;
+    const teamCanvas = document.getElementById('team-wheel-canvas');
+    let teamItems = [];
+
+    function initTeamPool() {
+      teamPool = Array.from({ length: teamCount }, (_, i) => i + 1);
+      teamItems = Array.from({ length: teamCount }, (_, i) => ({ 
+        label: `T${i+1}`, 
+        id: i + 1,
+        color: wheelPalette[i % wheelPalette.length]
+      }));
+      drawWheel(teamCanvas, teamItems, teamCurrentAngle, teamNoRepeat ? teamPool : null);
+    }
+
+    function adjustTeamCount(delta) {
+      if (teamSpinning) return;
+      const newCount = teamCount + delta;
+      if (newCount >= 3 && newCount <= 9) {
+        teamCount = newCount;
+        document.getElementById('team-count-val').innerText = teamCount;
+        initTeamPool();
+        document.getElementById('team-display').innerText = '';
+      }
+    }
+
+    function spinTeamWheel() {
+      if (teamSpinning) return;
+      if (teamNoRepeat && teamPool.length === 0) {
+        initTeamPool();
+      }
+
+      teamSpinning = true;
+      document.getElementById('team-spin-btn').disabled = true;
+      document.getElementById('team-display').classList.remove('celebrate');
+      document.getElementById('team-display').innerText = '...';
+
+      const pool = teamNoRepeat ? teamPool : Array.from({ length: teamCount }, (_, i) => i + 1);
+      const chosenVal = pool[Math.floor(Math.random() * pool.length)];
+      const targetIndex = teamItems.findIndex(item => item.id === chosenVal);
+
+      const pointer = document.getElementById('team-pointer');
+      animateWheelSpin(teamCanvas, pointer, teamItems, teamCurrentAngle, targetIndex, teamNoRepeat ? teamPool : null, (newAngle) => {
+        teamCurrentAngle = newAngle;
+        teamSpinning = false;
+        document.getElementById('team-spin-btn').disabled = false;
+
+        if (teamNoRepeat) {
+          const idx = teamPool.indexOf(chosenVal);
+          if (idx !== -1) teamPool.splice(idx, 1);
         }
-        return;
+
+        const disp = document.getElementById('team-display');
+        disp.innerText = `Team ${chosenVal}`;
+        disp.classList.add('celebrate');
+        
+        drawWheel(teamCanvas, teamItems, teamCurrentAngle, teamNoRepeat ? teamPool : null);
+        playChime();
+      });
+    }
+
+    function resetTeamPicker() {
+      if (teamSpinning) return;
+      initTeamPool();
+      document.getElementById('team-display').innerText = '';
+    }
+
+    /* 5. Team & Student (Dual Independent Spinners) Logic */
+    let dualTeamCount = 8;
+    let dualSeatCount = 4;
+    let dualNoRepeat = true;
+    let dualTeamPool = [];
+    let dualTeamCurrentAngle = 0;
+    let dualSeatCurrentAngle = 0;
+    let dualTeamSpinning = false;
+    let dualSeatSpinning = false;
+    const dualTeamCanvas = document.getElementById('dual-team-wheel-canvas');
+    const dualSeatCanvas = document.getElementById('dual-seat-wheel-canvas');
+    let dualTeamItems = [];
+    let dualSeatItems = buildSeatItems(dualSeatCount);
+
+    function initDualTeamPool() {
+      dualTeamPool = Array.from({ length: dualTeamCount }, (_, i) => i + 1);
+      dualTeamItems = Array.from({ length: dualTeamCount }, (_, i) => ({
+        label: `T${i+1}`,
+        id: i + 1,
+        color: wheelPalette[i % wheelPalette.length]
+      }));
+      drawWheel(dualTeamCanvas, dualTeamItems, dualTeamCurrentAngle, dualNoRepeat ? dualTeamPool : null);
+    }
+
+    function initDualSeatWheel() {
+      dualSeatItems = buildSeatItems(dualSeatCount);
+      drawWheel(dualSeatCanvas, dualSeatItems, dualSeatCurrentAngle, null);
+    }
+
+    function adjustDualTeamCount(delta) {
+      if (dualTeamSpinning) return;
+      const newCount = dualTeamCount + delta;
+      if (newCount >= 3 && newCount <= 9) {
+        dualTeamCount = newCount;
+        document.getElementById('dual-team-count-val').innerText = dualTeamCount;
+        initDualTeamPool();
+        document.getElementById('dual-team-display').innerText = '';
       }
-      updateTurnUI();
     }
-    
-    function toggleTurnTimer() {
-      const btn = document.getElementById('turn-start');
-      if (turnRunning) {
-        turnRunning = false;
-        turnLastTime = null;
-        btn.innerText = 'Resume';
-        btn.classList.replace('btn-pause', 'btn-start');
-      } else {
-        turnRunning = true;
-        turnLastTime = Date.now();
-        btn.innerText = 'Pause';
-        btn.classList.replace('btn-start', 'btn-pause');
+
+    function adjustDualSeatCount(delta) {
+      if (dualSeatSpinning) return;
+      const nextSeat = dualSeatCount + delta;
+      if (nextSeat >= 3 && nextSeat <= 6) {
+        dualSeatCount = nextSeat;
+        document.getElementById('dual-seat-count-val').innerText = dualSeatCount;
+        initDualSeatWheel();
+        document.getElementById('dual-seat-display').innerText = '';
       }
-      checkWorkerActivity();
-    }
-    
-    function resetTurnTimer() {
-      turnRunning = false;
-      turnLastTime = null;
-      checkWorkerActivity();
-      currentTurn = 1;
-      turnTimeLeftMs = turnDurationMs;
-      updateTurnUI();
-      const btn = document.getElementById('turn-start');
-      btn.innerText = 'Start';
-      btn.classList.replace('btn-pause', 'btn-start');
     }
 
-    /* 3. Visual Timer */
-    let visDurationMs = 180000, visTimeLeftMs = 180000;
-    let visRunning = false, visLastTime = null;
-
-    function applyVisualMode() {
-      document.getElementById('vis-chart-mode').innerText = `Mode: ${visualMode === 'pie' ? 'Pie' : 'Bar'}`;
-      document.getElementById('pie-wheel').style.display = (visualMode === 'pie') ? 'block' : 'none';
-      document.getElementById('visual-bar-wrap').style.display = (visualMode === 'bar') ? 'block' : 'none';
-      updateVisualUI();
-    }
-
-    function toggleChartMode() {
-      visualMode = (visualMode === 'pie') ? 'bar' : 'pie';
-      localStorage.setItem('timer_visual_mode', visualMode);
-      applyVisualMode();
-    }
-
-    function updateVisualUI() {
-      const remainingRatio = Math.max(0, Math.min(1, visTimeLeftMs / visDurationMs));
-      const remainingPercent = remainingRatio * 100;
-
-      if (visualMode === 'pie') {
-        const pie = document.getElementById('pie-wheel');
-        pie.style.background = `conic-gradient(from 0deg, var(--success) 0% ${remainingPercent}%, var(--danger) ${remainingPercent}% 100%)`;
-      } else {
-        const bar = document.getElementById('visual-bar-fill');
-        bar.style.width = `${remainingPercent}%`;
+    function spinDualTeamWheel() {
+      if (dualTeamSpinning) return;
+      if (dualNoRepeat && dualTeamPool.length === 0) {
+        initDualTeamPool();
       }
 
-      const text = formatTime(visTimeLeftMs, msState.vis);
-      const visTime = document.getElementById('visual-time');
-      visTime.innerText = text;
-      // Scale dynamically based on character count
-      visTime.style.setProperty('--char-count', text.length);
-    }
-    
-    function stepVisualDuration(deltaSec) {
-      if (visRunning) return;
-      visDurationMs = Math.max(10000, visDurationMs + deltaSec * 1000);
-      visTimeLeftMs = visDurationMs;
-      updateVisualUI();
-    }
-    
-    function loadVisualPreset(sec) {
-      if (visRunning) toggleVisualTimer();
-      visDurationMs = sec * 1000;
-      visTimeLeftMs = visDurationMs;
-      updateVisualUI();
-      toggleVisualTimer();
-    }
-    
-    function tickVisual(now) {
-      if (!visLastTime) visLastTime = now;
-      const delta = now - visLastTime;
-      visLastTime = now;
-      visTimeLeftMs -= delta;
+      dualTeamSpinning = true;
+      document.getElementById('dual-team-spin-btn').disabled = true;
+      document.getElementById('dual-team-display').classList.remove('celebrate');
+      document.getElementById('dual-team-display').innerText = '...';
 
-      if (visTimeLeftMs <= 0) {
-        visTimeLeftMs = 0;
-        visRunning = false;
-        visLastTime = null;
-        updateVisualUI();
-        checkWorkerActivity();
-        playAlertChime();
-        const btn = document.getElementById('vis-start');
-        btn.innerText = 'Start';
-        btn.classList.replace('btn-pause', 'btn-start');
-        return;
-      }
-      updateVisualUI();
-    }
-    
-    function toggleVisualTimer() {
-      const btn = document.getElementById('vis-start');
-      if (visRunning) {
-        visRunning = false;
-        visLastTime = null;
-        btn.innerText = 'Resume';
-        btn.classList.replace('btn-pause', 'btn-start');
-      } else {
-        visRunning = true;
-        visLastTime = Date.now();
-        btn.innerText = 'Pause';
-        btn.classList.replace('btn-start', 'btn-pause');
-      }
-      checkWorkerActivity();
-    }
-    
-    function resetVisualTimer() {
-      visRunning = false;
-      visLastTime = null;
-      checkWorkerActivity();
-      visTimeLeftMs = visDurationMs;
-      updateVisualUI();
-      const btn = document.getElementById('vis-start');
-      btn.innerText = 'Start';
-      btn.classList.replace('btn-pause', 'btn-start');
+      const pool = dualNoRepeat ? dualTeamPool : Array.from({ length: dualTeamCount }, (_, i) => i + 1);
+      const chosenTeam = pool[Math.floor(Math.random() * pool.length)];
+      const targetIndex = dualTeamItems.findIndex(item => item.id === chosenTeam);
+
+      const pointer = document.getElementById('dual-team-pointer');
+      animateWheelSpin(dualTeamCanvas, pointer, dualTeamItems, dualTeamCurrentAngle, targetIndex, dualNoRepeat ? dualTeamPool : null, (newAngle) => {
+        dualTeamCurrentAngle = newAngle;
+        dualTeamSpinning = false;
+        document.getElementById('dual-team-spin-btn').disabled = false;
+
+        if (dualNoRepeat) {
+          const idx = dualTeamPool.indexOf(chosenTeam);
+          if (idx !== -1) dualTeamPool.splice(idx, 1);
+        }
+
+        const disp = document.getElementById('dual-team-display');
+        disp.innerText = `Team ${chosenTeam}`;
+        disp.classList.add('celebrate');
+
+        drawWheel(dualTeamCanvas, dualTeamItems, dualTeamCurrentAngle, dualNoRepeat ? dualTeamPool : null);
+        playChime();
+      });
     }
 
-    /* Visibility Catchup */
-    document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) {
-        if (cdRunning) updateCdDisplay();
-        if (turnRunning) updateTurnUI();
-        if (visRunning) updateVisualUI();
+    function spinDualSeatWheel() {
+      if (dualSeatSpinning) return;
+
+      dualSeatSpinning = true;
+      document.getElementById('dual-seat-spin-btn').disabled = true;
+      document.getElementById('dual-seat-display').classList.remove('celebrate');
+      document.getElementById('dual-seat-display').innerText = '...';
+
+      const chosenSeat = Math.floor(Math.random() * dualSeatCount) + 1;
+      const matchingIndices = dualSeatItems
+        .map((item, idx) => item.id === chosenSeat ? idx : -1)
+        .filter(idx => idx !== -1);
+      const targetIndex = matchingIndices[Math.floor(Math.random() * matchingIndices.length)];
+
+      const pointer = document.getElementById('dual-seat-pointer');
+      animateWheelSpin(dualSeatCanvas, pointer, dualSeatItems, dualSeatCurrentAngle, targetIndex, null, (newAngle) => {
+        dualSeatCurrentAngle = newAngle;
+        dualSeatSpinning = false;
+        document.getElementById('dual-seat-spin-btn').disabled = false;
+
+        const disp = document.getElementById('dual-seat-display');
+        disp.innerText = `Seat ${chosenSeat}`;
+        disp.classList.add('celebrate');
+        playChime();
+      });
+    }
+
+    function resetDualPicker() {
+      if (dualTeamSpinning || dualSeatSpinning) return;
+      initDualTeamPool();
+      initDualSeatWheel();
+      document.getElementById('dual-team-display').innerText = '';
+      document.getElementById('dual-seat-display').innerText = '';
+    }
+
+    /* 6. Team Sequencer Logic */
+    let seqTeamCount = 8;
+    let teamSeqRunning = false;
+
+    function renderOrderedTeamCards() {
+      const deck = document.getElementById('team-seq-deck');
+      deck.innerHTML = '';
+      for (let i = 1; i <= seqTeamCount; i++) {
+        const card = document.createElement('div');
+        card.className = 'seq-step-card';
+        card.style.backgroundColor = wheelPalette[(i - 1) % wheelPalette.length];
+        card.innerHTML = `<div class="seq-step-val">Team ${i}</div>`;
+        deck.appendChild(card);
       }
-    });
+    }
+
+    function adjustSeqTeamCount(delta) {
+      if (teamSeqRunning) return;
+      const newCount = seqTeamCount + delta;
+      if (newCount >= 3 && newCount <= 9) {
+        seqTeamCount = newCount;
+        document.getElementById('team-seq-count-val').innerText = seqTeamCount;
+        renderOrderedTeamCards();
+      }
+    }
+
+    function runTeamShellGame() {
+      if (teamSeqRunning) return;
+      teamSeqRunning = true;
+      document.getElementById('team-seq-btn').disabled = true;
+
+      const deck = document.getElementById('team-seq-deck');
+      if (deck.children.length === 0) {
+        renderOrderedTeamCards();
+      }
+
+      animateShellGame(deck, () => {
+        teamSeqRunning = false;
+        document.getElementById('team-seq-btn').disabled = false;
+        Array.from(deck.children).forEach(c => c.classList.add('celebrate'));
+        playChime();
+      });
+    }
+
+    function resetTeamSequence() {
+      if (teamSeqRunning) return;
+      renderOrderedTeamCards();
+    }
 
     /* Hydrate Preferences & Init */
     document.getElementById('vol-slider').value = Math.round(currentVolume * 100);
@@ -1884,22 +2289,21 @@
     const initialChimeMatch = chimesList.find(c => c.id === currentChime);
     if (initialChimeMatch) document.getElementById('chime-btn-val').innerText = initialChimeMatch.name;
 
+    document.getElementById('speed-btn-val').innerText = spinSpeeds[currentSpeedIndex].name;
+
     document.body.setAttribute('data-theme', currentTheme);
 
-    initMsButtons();
-    applyVisualMode();
+    initSeatPool();
+    initPartnerItems();
+    initTeamPool();
+    initDualTeamPool();
+    initDualSeatWheel();
 
-    createPresetButtons('cd-presets', loadCountdownPreset);
-    createPresetButtons('turn-presets', loadTurnPreset);
-    createPresetButtons('vis-presets', loadVisualPreset);
-
-    // Initial updates to pass the initial character count to CSS
-    updateCdDisplay();
-    updateTurnUI();
-    updateVisualUI();
+    renderOrderedSeatCards();
+    renderOrderedTeamCards();
     
-    // Switch to the correct timer (vital for embed mode)
-    switchTimer(startupTimer);
+    // Switch to the correct view (vital for embed mode)
+    switchView(startupView);
   </script>
 </body>
 </html>

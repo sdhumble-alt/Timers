@@ -412,16 +412,23 @@
       position: relative;
       padding: 0.75rem 1.5rem;
       overflow: hidden;
+      container-type: size; /* Enables container scaling */
     }
 
+    /* 
+      Dynamic Font Scaling:
+      Uses the --char-count CSS variable calculated by JS to determine the 
+      exact maximum width the font can grow to without cutting off.
+    */
     .timer-digits {
-      font-size: clamp(4rem, 13vw, 11rem);
+      font-size: min(calc(90cqw / (var(--char-count, 5) * 0.6)), 55cqh);
       font-weight: 900;
       font-variant-numeric: tabular-nums;
       letter-spacing: 2px;
       text-align: center;
       line-height: 1;
       max-width: 100%;
+      white-space: nowrap;
     }
 
     /* Steppers */
@@ -721,7 +728,8 @@
     }
 
     .visual-time-text {
-      font-size: clamp(3rem, 7vh, 5.5rem);
+      /* Shared dynamic scaling but bound to 18cqh so it doesn't overlap the chart */
+      font-size: min(calc(90cqw / (var(--char-count, 5) * 0.6)), 18cqh);
       font-weight: 900;
       font-variant-numeric: tabular-nums;
       letter-spacing: 2px;
@@ -1477,14 +1485,20 @@
     let cdRunning = false, cdLastTime = null;
 
     function updateCdDisplay() {
-      document.getElementById('cd-display').innerText = formatTime(cdTimeLeftMs, msState.cd);
+      const text = formatTime(cdTimeLeftMs, msState.cd);
+      const display = document.getElementById('cd-display');
+      display.innerText = text;
+      // Pass the exact character length to CSS so calc() scales it perfectly
+      display.style.setProperty('--char-count', text.length);
     }
+    
     function stepCountdown(deltaSec) {
       if (cdRunning) return;
       cdDurationMs = Math.max(5000, cdDurationMs + deltaSec * 1000);
       cdTimeLeftMs = cdDurationMs;
       updateCdDisplay();
     }
+    
     function loadCountdownPreset(sec) {
       if (cdRunning) toggleCountdown();
       cdDurationMs = sec * 1000;
@@ -1492,6 +1506,7 @@
       updateCdDisplay();
       toggleCountdown();
     }
+    
     function tickCountdown(now) {
       if (!cdLastTime) cdLastTime = now;
       const delta = now - cdLastTime;
@@ -1512,6 +1527,7 @@
       }
       updateCdDisplay();
     }
+    
     function toggleCountdown() {
       const btn = document.getElementById('cd-start');
       if (cdRunning) {
@@ -1527,6 +1543,7 @@
       }
       checkWorkerActivity();
     }
+    
     function resetCountdown() {
       cdRunning = false;
       cdLastTime = null;
@@ -1547,7 +1564,13 @@
       const turnsDisplay = (totalTurns === Infinity) ? '∞' : totalTurns;
       document.getElementById('total-turns-val').innerText = turnsDisplay;
       document.getElementById('turn-badge').innerText = `Turn ${currentTurn} of ${turnsDisplay}`;
-      document.getElementById('turn-digits').innerText = formatTime(turnTimeLeftMs, msState.turn);
+      
+      const text = formatTime(turnTimeLeftMs, msState.turn);
+      const digits = document.getElementById('turn-digits');
+      digits.innerText = text;
+      // Scale dynamically based on character count
+      digits.style.setProperty('--char-count', text.length);
+      
       const progress = (turnTimeLeftMs / turnDurationMs) * 100;
       document.getElementById('turn-progress').style.width = `${Math.max(0, progress)}%`;
     }
@@ -1577,12 +1600,14 @@
       turnTimeLeftMs = turnDurationMs;
       updateTurnUI();
     }
+    
     function loadTurnPreset(sec) {
       if (turnRunning) toggleTurnTimer();
       turnDurationMs = sec * 1000;
       turnTimeLeftMs = turnDurationMs;
       updateTurnUI();
     }
+    
     function tickTurn(now) {
       if (!turnLastTime) turnLastTime = now;
       const delta = now - turnLastTime;
@@ -1610,6 +1635,7 @@
       }
       updateTurnUI();
     }
+    
     function toggleTurnTimer() {
       const btn = document.getElementById('turn-start');
       if (turnRunning) {
@@ -1625,6 +1651,7 @@
       }
       checkWorkerActivity();
     }
+    
     function resetTurnTimer() {
       turnRunning = false;
       turnLastTime = null;
@@ -1667,14 +1694,20 @@
         bar.style.width = `${remainingPercent}%`;
       }
 
-      document.getElementById('visual-time').innerText = formatTime(visTimeLeftMs, msState.vis);
+      const text = formatTime(visTimeLeftMs, msState.vis);
+      const visTime = document.getElementById('visual-time');
+      visTime.innerText = text;
+      // Scale dynamically based on character count
+      visTime.style.setProperty('--char-count', text.length);
     }
+    
     function stepVisualDuration(deltaSec) {
       if (visRunning) return;
       visDurationMs = Math.max(10000, visDurationMs + deltaSec * 1000);
       visTimeLeftMs = visDurationMs;
       updateVisualUI();
     }
+    
     function loadVisualPreset(sec) {
       if (visRunning) toggleVisualTimer();
       visDurationMs = sec * 1000;
@@ -1682,6 +1715,7 @@
       updateVisualUI();
       toggleVisualTimer();
     }
+    
     function tickVisual(now) {
       if (!visLastTime) visLastTime = now;
       const delta = now - visLastTime;
@@ -1702,6 +1736,7 @@
       }
       updateVisualUI();
     }
+    
     function toggleVisualTimer() {
       const btn = document.getElementById('vis-start');
       if (visRunning) {
@@ -1717,6 +1752,7 @@
       }
       checkWorkerActivity();
     }
+    
     function resetVisualTimer() {
       visRunning = false;
       visLastTime = null;
@@ -1756,6 +1792,8 @@
     createPresetButtons('turn-presets', loadTurnPreset);
     createPresetButtons('vis-presets', loadVisualPreset);
 
+    // Initial updates to pass the initial character count to CSS
+    updateCdDisplay();
     updateTurnUI();
     updateVisualUI();
   </script>

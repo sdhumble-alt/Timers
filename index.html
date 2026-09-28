@@ -875,6 +875,48 @@
     .touch-tile-preview:active {
       transform: scale(0.95);
     }
+
+    /* ---------------------------------
+       EMBED MODE CSS RULES 
+       --------------------------------- */
+    body.is-embedded .sidebar-toggle-btn,
+    body.is-embedded nav,
+    body.is-embedded .preset-multi-row,
+    body.is-embedded .toggle-pill-btn {
+      display: none !important;
+    }
+    
+    body.is-embedded main {
+      padding: 0.5rem;
+      height: 100vh;
+      width: 100vw;
+    }
+    
+    body.is-embedded .timer-view {
+      min-height: 0;
+      height: 100%;
+    }
+    
+    body.is-embedded .stepper-deck {
+      gap: 0.5rem;
+    }
+    
+    body.is-embedded .stepper-btn {
+      width: 48px;
+      height: 32px;
+      font-size: 1.1rem;
+    }
+    
+    body.is-embedded .display-box {
+      border-radius: 16px;
+      min-height: 120px;
+      padding: 0.5rem;
+    }
+    
+    body.is-embedded .action-btn {
+      height: 54px;
+      font-size: 1.25rem;
+    }
   </style>
 </head>
 <body data-theme="default">
@@ -883,9 +925,9 @@
   <button class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Toggle Sidebar">☰</button>
 
   <nav id="app-sidebar">
-    <button class="nav-btn active" onclick="switchTimer('countdown')">Countdown</button>
-    <button class="nav-btn" onclick="switchTimer('turn')">Turn Timer</button>
-    <button class="nav-btn" onclick="switchTimer('visual')">Visual Timer</button>
+    <button class="nav-btn" onclick="switchTimer('countdown', event)">Countdown</button>
+    <button class="nav-btn" onclick="switchTimer('turn', event)">Turn Timer</button>
+    <button class="nav-btn" onclick="switchTimer('visual', event)">Visual Timer</button>
 
     <div class="nav-settings">
       <div class="setting-group">
@@ -912,6 +954,15 @@
         <input type="range" class="volume-slider" id="vol-slider" min="0" max="100" value="80" oninput="updateVolume(this.value)">
       </div>
 
+      <!-- NEW: Integration / Embed Generator Button -->
+      <div class="setting-group">
+        <div class="setting-label">Integration</div>
+        <button class="modal-trigger-btn" onclick="copyEmbedCode(this)">
+          <span>Copy Embed Code</span>
+          <span class="modal-trigger-val">🔗</span>
+        </button>
+      </div>
+
       <div class="app-meta-footer">
         <span>V1.0.0 (09-06-2026)</span>
       </div>
@@ -920,7 +971,7 @@
 
   <main>
     <!-- Countdown View -->
-    <section id="view-countdown" class="timer-view active">
+    <section id="view-countdown" class="timer-view">
       <div class="stepper-deck">
         <div class="stepper">
           <button class="stepper-btn" onclick="stepCountdown(3600)">▲</button>
@@ -1122,6 +1173,21 @@
     let currentVolume = parseFloat(localStorage.getItem('timer_volume') ?? '0.8');
     let currentChime = localStorage.getItem('timer_chime') ?? 'bell';
     let currentTheme = localStorage.getItem('timer_theme') ?? 'default';
+    let visualMode = localStorage.getItem('timer_visual_mode') ?? 'pie';
+
+    // --- URL Parsing for Embeds ---
+    const urlParams = new URLSearchParams(window.location.search);
+    const isEmbedded = urlParams.get('embed') === 'true';
+    let startupTimer = 'countdown';
+
+    if (isEmbedded) {
+      document.body.classList.add('is-embedded');
+      // Override saved settings if provided in URL
+      if (urlParams.get('theme')) currentTheme = urlParams.get('theme');
+      if (urlParams.get('chime')) currentChime = urlParams.get('chime');
+      if (urlParams.get('type')) startupTimer = urlParams.get('type');
+      if (urlParams.get('vismode')) visualMode = urlParams.get('vismode');
+    }
 
     function setMasterGain(vol) {
       masterGainNode.gain.setValueAtTime(vol, audioCtx.currentTime);
@@ -1133,6 +1199,30 @@
       setMasterGain(currentVolume);
       document.getElementById('vol-label').innerText = `${val}%`;
       localStorage.setItem('timer_volume', currentVolume.toString());
+    }
+
+    /* Embed Code Generator */
+    function copyEmbedCode(btnEl) {
+      // Find which timer is active
+      let activeType = 'countdown';
+      if (document.getElementById('view-turn').classList.contains('active')) activeType = 'turn';
+      if (document.getElementById('view-visual').classList.contains('active')) activeType = 'visual';
+
+      const baseUrl = "https://timers.humblescience.org";
+      let src = `${baseUrl}/?embed=true&type=${activeType}&theme=${currentTheme}&chime=${currentChime}`;
+      
+      // Pass the specific visual mode if generating code for the visual timer
+      if (activeType === 'visual') {
+        src += `&vismode=${visualMode}`;
+      }
+
+      const iframe = `<iframe src="${src}" width="100%" height="400px" style="border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"></iframe>`;
+
+      navigator.clipboard.writeText(iframe).then(() => {
+        const originalText = btnEl.innerHTML;
+        btnEl.innerHTML = `<span>Copied!</span><span class="modal-trigger-val">✓</span>`;
+        setTimeout(() => { btnEl.innerHTML = originalText; }, 2000);
+      });
     }
 
     /* Themes Configuration */
@@ -1401,12 +1491,20 @@
       if (visRunning) toggleVisualTimer();
     }
 
-    function switchTimer(timerId) {
+    function switchTimer(timerId, eventObj = null) {
       pauseAllTimers();
       document.querySelectorAll('.timer-view').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      
       document.getElementById(`view-${timerId}`).classList.add('active');
-      event.currentTarget.classList.add('active');
+      
+      if (eventObj && eventObj.currentTarget) {
+        eventObj.currentTarget.classList.add('active');
+      } else {
+        const fallbackBtn = document.querySelector(`.nav-btn[onclick*="${timerId}"]`);
+        if (fallbackBtn) fallbackBtn.classList.add('active');
+      }
+      
       handleMobileNavClick();
     }
 
@@ -1667,7 +1765,6 @@
     /* 3. Visual Timer */
     let visDurationMs = 180000, visTimeLeftMs = 180000;
     let visRunning = false, visLastTime = null;
-    let visualMode = localStorage.getItem('timer_visual_mode') ?? 'pie';
 
     function applyVisualMode() {
       document.getElementById('vis-chart-mode').innerText = `Mode: ${visualMode === 'pie' ? 'Pie' : 'Bar'}`;
@@ -1796,6 +1893,9 @@
     updateCdDisplay();
     updateTurnUI();
     updateVisualUI();
+    
+    // Switch to the correct timer (vital for embed mode)
+    switchTimer(startupTimer);
   </script>
 </body>
 </html>

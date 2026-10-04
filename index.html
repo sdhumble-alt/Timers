@@ -217,12 +217,10 @@
       z-index: 50;
     }
 
-    /* Manual Collapse */
     nav.collapsed {
       margin-left: -270px !important;
     }
 
-    /* Automatic Responsive Collapse below 900px */
     @media (max-width: 900px) {
       nav {
         margin-left: -270px;
@@ -232,7 +230,6 @@
         left: 0;
         box-shadow: 8px 0 24px rgba(0, 0, 0, 0.6);
       }
-      /* If user explicitly opens it while screen is small */
       nav.expanded-mobile {
         margin-left: 0 !important;
       }
@@ -413,14 +410,9 @@
       position: relative;
       padding: 0.75rem 1.5rem;
       overflow: hidden;
-      container-type: size; /* Enables container scaling */
+      container-type: size;
     }
 
-    /* 
-      Dynamic Font Scaling:
-      Uses the --char-count CSS variable calculated by JS to determine the 
-      exact maximum width the font can grow to without cutting off.
-    */
     .timer-digits {
       font-size: min(calc(90cqw / (var(--char-count, 5) * 0.6)), 55cqh);
       font-weight: 900;
@@ -430,6 +422,161 @@
       line-height: 1;
       max-width: 100%;
       white-space: nowrap;
+    }
+
+    /* Task View Specifics */
+    .task-layout-wrapper {
+      display: flex;
+      width: 100%;
+      flex: 1;
+      gap: 0.75rem;
+      min-height: 0;
+    }
+
+    .vertical-templates {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      background-color: var(--bg-card);
+      border: 2px solid var(--border-color);
+      border-radius: 24px;
+      padding: 1rem;
+      width: 140px;
+      flex-shrink: 0;
+      overflow-y: auto;
+    }
+
+    .vertical-templates .template-label {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      text-align: center;
+      margin-bottom: 0.25rem;
+      margin-top: 0.25rem;
+    }
+    
+    .vertical-templates .template-label:first-child {
+      margin-top: 0;
+    }
+
+    .vertical-templates .preset-btn {
+      padding: 0.75rem 0.5rem;
+      font-size: 1rem;
+      width: 100%;
+    }
+
+    .divider-line-hz {
+      height: 2px;
+      background-color: var(--border-color);
+      margin: 0.25rem 0;
+      width: 100%;
+    }
+
+    .task-list-container {
+      width: 100%;
+      max-width: 850px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      height: 100%;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      background: var(--bg-input);
+      border: 3px solid transparent;
+      border-radius: 16px;
+      padding: 0.65rem 1.25rem;
+      cursor: pointer;
+      gap: 1.5rem;
+      transition: all 0.2s ease;
+    }
+
+    .task-item:hover {
+      filter: brightness(1.1);
+    }
+
+    .task-item.selected {
+      border-color: var(--primary);
+    }
+
+    .task-item.active-run {
+      border-color: var(--success);
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.4);
+    }
+
+    .task-item.completed {
+      opacity: 0.4;
+    }
+
+    .task-name-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      min-width: 100px;
+    }
+
+    .task-name {
+      font-size: 1.5rem;
+      font-weight: 900;
+    }
+
+    .task-name-input {
+      background: rgba(0, 0, 0, 0.15);
+      border: 2px solid var(--border-color);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 1.15rem;
+      font-weight: 700;
+      width: 140px;
+      border-radius: 8px;
+      padding: 0.3rem 0.6rem;
+      transition: all 0.2s;
+    }
+
+    .task-name-input:focus, .task-name-input:hover {
+      border-color: var(--primary);
+      background: var(--bg-card);
+      outline: none;
+    }
+
+    .task-name-input:disabled {
+      border-color: transparent;
+      background: transparent;
+      color: var(--text-main);
+      cursor: default;
+    }
+
+    .task-bar-wrap {
+      flex: 1;
+      height: 20px;
+      background: var(--border-color);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .task-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 100%;
+      transition: width 0.05s linear;
+    }
+
+    .task-item.active-run .task-bar-fill {
+      background: var(--success);
+    }
+
+    .task-time {
+      font-size: 1.5rem;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      min-width: 110px;
+      text-align: right;
     }
 
     /* Steppers */
@@ -480,7 +627,7 @@
       color: var(--text-muted);
     }
 
-    /* Turn Selector Box */
+    /* Turn / Task Selector Box */
     .turn-config-strip {
       display: flex;
       align-items: center;
@@ -526,6 +673,16 @@
       font-variant-numeric: tabular-nums;
       text-align: center;
       width: 100%;
+    }
+
+    .active-task-display {
+      font-size: 3.2rem !important;
+      padding: 0 1rem;
+      text-transform: uppercase;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 450px;
     }
 
     .turn-selector-stepper {
@@ -625,6 +782,7 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
+      align-items: center;
       gap: 0.4rem;
       width: 100%;
       max-width: 1050px;
@@ -729,7 +887,6 @@
     }
 
     .visual-time-text {
-      /* Shared dynamic scaling but bound to 18cqh so it doesn't overlap the chart */
       font-size: min(calc(90cqw / (var(--char-count, 5) * 0.6)), 18cqh);
       font-weight: 900;
       font-variant-numeric: tabular-nums;
@@ -883,6 +1040,7 @@
     body.is-embedded .sidebar-toggle-btn,
     body.is-embedded nav,
     body.is-embedded .preset-multi-row,
+    body.is-embedded .vertical-templates,
     body.is-embedded .toggle-pill-btn {
       display: none !important;
     }
@@ -927,6 +1085,7 @@
 
   <nav id="app-sidebar">
     <button class="nav-btn" onclick="switchTimer('countdown', event)">Countdown</button>
+    <button class="nav-btn" onclick="switchTimer('tasks', event)">Task Timers</button>
     <button class="nav-btn" onclick="switchTimer('turn', event)">Turn Timer</button>
     <button class="nav-btn" onclick="switchTimer('visual', event)">Visual Timer</button>
 
@@ -955,7 +1114,6 @@
         <input type="range" class="volume-slider" id="vol-slider" min="0" max="100" value="80" oninput="updateVolume(this.value)">
       </div>
 
-      <!-- Embed Generator Button (Integration title removed) -->
       <div class="setting-group">
         <button class="modal-trigger-btn" onclick="copyEmbedCode(this)">
           <span>Copy Embed Code</span>
@@ -967,7 +1125,7 @@
       </div>
 
       <div class="app-meta-footer">
-        <span>V1.1.0 (09-28-2026)</span>
+        <span>V1.2.0 (10-04-2026)</span>
       </div>
     </div>
   </nav>
@@ -1004,6 +1162,82 @@
       </div>
 
       <div class="preset-multi-row" id="cd-presets"></div>
+    </section>
+
+    <!-- Task Sequence View -->
+    <section id="view-tasks" class="timer-view">
+      
+      <!-- Static Config Strip (Visible when stopped/paused) -->
+      <div class="turn-config-strip" id="tasks-config-strip">
+        <div class="turn-selector-card">
+          <div class="turn-selector-info">
+            <span class="turn-selector-label">Total Tasks</span>
+            <span class="turn-selector-count" id="task-count-val">1</span>
+          </div>
+          <div class="turn-selector-stepper">
+            <button class="turn-stepper-btn" onclick="adjustTaskCount(1)">▲</button>
+            <button class="turn-stepper-btn" onclick="adjustTaskCount(-1)">▼</button>
+          </div>
+        </div>
+
+        <div class="stepper-deck">
+          <div class="stepper">
+            <button class="stepper-btn" onclick="adjustSelectedTask(3600)">▲</button>
+            <span class="stepper-label">Hr</span>
+            <button class="stepper-btn" onclick="adjustSelectedTask(-3600)">▼</button>
+          </div>
+          <div class="stepper">
+            <button class="stepper-btn" onclick="adjustSelectedTask(60)">▲</button>
+            <span class="stepper-label">Min</span>
+            <button class="stepper-btn" onclick="adjustSelectedTask(-60)">▼</button>
+          </div>
+          <div class="stepper">
+            <button class="stepper-btn" onclick="adjustSelectedTask(5)">▲</button>
+            <span class="stepper-label">Sec</span>
+            <button class="stepper-btn" onclick="adjustSelectedTask(-5)">▼</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Running Banner (Visible when running) -->
+      <div class="turn-config-strip" id="tasks-active-banner" style="display: none;">
+        <div class="turn-selector-card" style="padding: 0.6rem 2.5rem;">
+          <div class="turn-selector-info">
+            <span class="turn-selector-label">Turn</span>
+            <span class="turn-selector-count active-task-display" id="active-task-display">1</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Layout Wrapper for Task View -> Sidebar + Display Box -->
+      <div class="task-layout-wrapper">
+        <div class="vertical-templates" id="tasks-templates-strip">
+           <span class="template-label">PARTNERS</span>
+           <button class="preset-btn" onclick="applySequenceTemplate('ab', 1)">1x</button>
+           <button class="preset-btn" onclick="applySequenceTemplate('ab', 2)">2x</button>
+           <button class="preset-btn" onclick="applySequenceTemplate('ab', 3)">3x</button>
+           <div class="divider-line-hz"></div>
+           <span class="template-label">SEATS</span>
+           <button class="preset-btn" onclick="applySequenceTemplate('seats', 3)">1 to 3</button>
+           <button class="preset-btn" onclick="applySequenceTemplate('seats', 4)">1 to 4</button>
+           <button class="preset-btn" onclick="applySequenceTemplate('seats', 5)">1 to 5</button>
+           <button class="preset-btn" onclick="applySequenceTemplate('seats', 6)">1 to 6</button>
+        </div>
+
+        <div class="display-box" style="justify-content: flex-start; padding: 1rem 1.5rem; margin: 0;">
+          <div class="task-list-container" id="task-list-container">
+            <!-- Task Items Injected Here -->
+          </div>
+        </div>
+      </div>
+
+      <div class="control-deck">
+        <button class="action-btn btn-start" id="tasks-start" onclick="toggleTasks()">Start</button>
+        <button class="action-btn btn-reset" onclick="resetTasks()">Reset</button>
+        <button class="toggle-pill-btn" id="tasks-ms-toggle" onclick="toggleMs('tasks')">Whole Second</button>
+      </div>
+
+      <div class="preset-multi-row" id="tasks-presets"></div>
     </section>
 
     <!-- Turn Timer View -->
@@ -1147,7 +1381,6 @@
       }
     }
 
-    // Auto-close overlay drawer on mobile when switching timers
     function handleMobileNavClick() {
       if (window.innerWidth <= 900) {
         sidebar.classList.remove('expanded-mobile');
@@ -1178,6 +1411,10 @@
     let currentTheme = localStorage.getItem('timer_theme') ?? 'default';
     let visualMode = localStorage.getItem('timer_visual_mode') ?? 'pie';
 
+    let taskList = [
+      { durationMs: 300000, timeLeftMs: 300000, name: '' }
+    ];
+
     // --- URL Parsing for Embeds ---
     const urlParams = new URLSearchParams(window.location.search);
     const isEmbedded = urlParams.get('embed') === 'true';
@@ -1185,11 +1422,22 @@
 
     if (isEmbedded) {
       document.body.classList.add('is-embedded');
-      // Override saved settings if provided in URL
       if (urlParams.get('theme')) currentTheme = urlParams.get('theme');
       if (urlParams.get('chime')) currentChime = urlParams.get('chime');
       if (urlParams.get('type')) startupTimer = urlParams.get('type');
       if (urlParams.get('vismode')) visualMode = urlParams.get('vismode');
+      
+      // Load Custom Task Data if available
+      if (urlParams.get('tc')) {
+        const count = parseInt(urlParams.get('tc'), 10);
+        taskList = [];
+        for (let i = 0; i < count; i++) {
+          const d = parseInt(urlParams.get(`td${i}`), 10) || 300000;
+          const n = urlParams.get(`tn${i}`) || '';
+          taskList.push({ durationMs: d, timeLeftMs: d, name: n });
+        }
+        document.getElementById('task-count-val').innerText = taskList.length;
+      }
     }
 
     function setMasterGain(vol) {
@@ -1206,17 +1454,26 @@
 
     /* Embed Code Generator */
     function copyEmbedCode(btnEl) {
-      // Find which timer is active
       let activeType = 'countdown';
       if (document.getElementById('view-turn').classList.contains('active')) activeType = 'turn';
       if (document.getElementById('view-visual').classList.contains('active')) activeType = 'visual';
+      if (document.getElementById('view-tasks').classList.contains('active')) activeType = 'tasks';
 
       const baseUrl = "https://timers.humblescience.org";
       let src = `${baseUrl}/?embed=true&type=${activeType}&theme=${currentTheme}&chime=${currentChime}`;
       
-      // Pass the specific visual mode if generating code for the visual timer
       if (activeType === 'visual') {
         src += `&vismode=${visualMode}`;
+      }
+
+      if (activeType === 'tasks') {
+        src += `&tc=${taskList.length}`;
+        taskList.forEach((t, i) => {
+          src += `&td${i}=${t.durationMs}`;
+          if (t.name) {
+            src += `&tn${i}=${encodeURIComponent(t.name)}`;
+          }
+        });
       }
 
       const iframe = `<iframe src="${src}" width="100%" height="400px" style="border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"></iframe>`;
@@ -1227,6 +1484,13 @@
         setTimeout(() => { btnEl.innerHTML = originalText; }, 2000);
       });
     }
+
+    /* Utilities */
+    const escapeHTML = (str) => {
+      const div = document.createElement('div');
+      div.innerText = str;
+      return div.innerHTML;
+    };
 
     /* Themes Configuration */
     const themesList = [
@@ -1474,7 +1738,7 @@
     }
 
     function checkWorkerActivity() {
-      if (cdRunning || turnRunning || visRunning) {
+      if (cdRunning || turnRunning || visRunning || tasksRunning) {
         timerWorker.postMessage('start');
       } else {
         timerWorker.postMessage('stop');
@@ -1486,12 +1750,14 @@
       if (cdRunning) tickCountdown(now);
       if (turnRunning) tickTurn(now);
       if (visRunning) tickVisual(now);
+      if (tasksRunning) tickTasks(now);
     };
 
     function pauseAllTimers() {
       if (cdRunning) toggleCountdown();
       if (turnRunning) toggleTurnTimer();
       if (visRunning) toggleVisualTimer();
+      if (tasksRunning) toggleTasks();
     }
 
     function switchTimer(timerId, eventObj = null) {
@@ -1558,7 +1824,8 @@
     const msState = {
       cd: localStorage.getItem('timer_ms_cd') === 'true',
       turn: localStorage.getItem('timer_ms_turn') === 'true',
-      vis: localStorage.getItem('timer_ms_vis') === 'true'
+      vis: localStorage.getItem('timer_ms_vis') === 'true',
+      tasks: localStorage.getItem('timer_ms_tasks') === 'true'
     };
 
     function updateTogglePillText(key) {
@@ -1568,7 +1835,7 @@
     }
 
     function initMsButtons() {
-      ['cd', 'turn', 'vis'].forEach(key => updateTogglePillText(key));
+      ['cd', 'turn', 'vis', 'tasks'].forEach(key => updateTogglePillText(key));
     }
 
     function toggleMs(timerKey) {
@@ -1579,6 +1846,7 @@
       if (timerKey === 'cd') updateCdDisplay();
       if (timerKey === 'turn') updateTurnUI();
       if (timerKey === 'vis') updateVisualUI();
+      if (timerKey === 'tasks') renderTasksUI();
     }
 
     /* 1. Countdown */
@@ -1589,7 +1857,6 @@
       const text = formatTime(cdTimeLeftMs, msState.cd);
       const display = document.getElementById('cd-display');
       display.innerText = text;
-      // Pass the exact character length to CSS so calc() scales it perfectly
       display.style.setProperty('--char-count', text.length);
     }
     
@@ -1656,7 +1923,226 @@
       btn.classList.replace('btn-pause', 'btn-start');
     }
 
-    /* 2. Turn Timer */
+    /* 2. Tasks Timer */
+    let tasksRunning = false;
+    let tasksLastTime = null;
+    let selectedTaskIdx = 0;
+    let activeRunIdx = 0;
+    let lastTasksResetTime = 0;
+
+    function renderTasksUI() {
+      const container = document.getElementById('task-list-container');
+      container.innerHTML = '';
+      
+      taskList.forEach((task, i) => {
+        const div = document.createElement('div');
+        div.className = `task-item ${i === selectedTaskIdx ? 'selected' : ''} ${i === activeRunIdx && tasksRunning ? 'active-run' : ''} ${i < activeRunIdx ? 'completed' : ''}`;
+        div.onclick = () => selectTask(i);
+        
+        const progressRatio = Math.max(0, Math.min(1, task.timeLeftMs / task.durationMs));
+        const progressPercent = progressRatio * 100;
+        const text = formatTime(task.timeLeftMs, msState.tasks);
+        
+        div.innerHTML = `
+          <div class="task-name-group">
+            <span class="task-name">${i + 1}</span>
+            <input type="text" class="task-name-input" id="task-input-${i}" value="${escapeHTML(task.name)}" maxlength="10" onclick="event.stopPropagation()" onchange="saveTaskName(${i}, this.value)" onkeyup="if(event.key==='Enter') this.blur()" ${tasksRunning ? 'disabled' : ''}>
+          </div>
+          <div class="task-bar-wrap">
+            <div class="task-bar-fill" style="width: ${progressPercent}%"></div>
+          </div>
+          <div class="task-time">${text}</div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function updateTasksBanner() {
+      if (!tasksRunning) return;
+      const t = taskList[activeRunIdx];
+      const displayVal = t.name && t.name.trim() !== '' ? t.name.trim() : (activeRunIdx + 1);
+      document.getElementById('active-task-display').innerText = displayVal;
+    }
+
+    function applySequenceTemplate(type, multiplier) {
+      if (tasksRunning) toggleTasks();
+      
+      const currentDur = taskList.length > 0 ? taskList[selectedTaskIdx].durationMs : 300000;
+      taskList = [];
+      
+      if (type === 'ab') {
+        const total = multiplier * 2;
+        for (let i = 0; i < total; i++) {
+          const name = i % 2 === 0 ? "Partner A" : "Partner B";
+          taskList.push({ durationMs: currentDur, timeLeftMs: currentDur, name: name });
+        }
+      } else if (type === 'seats') {
+        const total = multiplier;
+        for (let i = 0; i < total; i++) {
+          taskList.push({ durationMs: currentDur, timeLeftMs: currentDur, name: `Seat ${i+1}` });
+        }
+      }
+      
+      selectedTaskIdx = 0;
+      activeRunIdx = 0;
+      document.getElementById('task-count-val').innerText = taskList.length;
+      renderTasksUI();
+    }
+
+    function adjustTaskCount(delta) {
+      if (tasksRunning) return;
+      let newCount = taskList.length + delta;
+      if (newCount < 1) newCount = 1;
+      if (newCount > 6) newCount = 6;
+      
+      while (taskList.length < newCount) {
+         const lastDur = taskList[taskList.length - 1].durationMs;
+         taskList.push({ durationMs: lastDur, timeLeftMs: lastDur, name: '' });
+      }
+      while (taskList.length > newCount) {
+         taskList.pop();
+      }
+      if (selectedTaskIdx >= taskList.length) selectedTaskIdx = taskList.length - 1;
+      if (activeRunIdx >= taskList.length) activeRunIdx = 0;
+      
+      document.getElementById('task-count-val').innerText = taskList.length;
+      renderTasksUI();
+    }
+
+    function selectTask(idx) {
+      if (tasksRunning) return;
+      selectedTaskIdx = idx;
+      renderTasksUI();
+    }
+
+    function saveTaskName(i, val) {
+      taskList[i].name = val.trim().substring(0, 10);
+    }
+
+    function adjustSelectedTask(deltaSec) {
+      if (tasksRunning) return;
+      const t = taskList[selectedTaskIdx];
+      t.durationMs = Math.max(5000, t.durationMs + deltaSec * 1000);
+      t.timeLeftMs = t.durationMs;
+      renderTasksUI();
+    }
+
+    function loadTasksPreset(sec) {
+      if (tasksRunning) toggleTasks();
+      
+      taskList.forEach(t => {
+        t.durationMs = sec * 1000;
+        t.timeLeftMs = t.durationMs;
+      });
+      
+      renderTasksUI();
+    }
+
+    function toggleTasks() {
+      const btn = document.getElementById('tasks-start');
+      const configStrip = document.getElementById('tasks-config-strip');
+      const templatesStrip = document.getElementById('tasks-templates-strip');
+      const activeBanner = document.getElementById('tasks-active-banner');
+
+      if (tasksRunning) {
+        tasksRunning = false;
+        tasksLastTime = null;
+        btn.innerText = 'Resume';
+        btn.classList.replace('btn-pause', 'btn-start');
+        configStrip.style.display = 'flex'; 
+        templatesStrip.style.display = 'flex';
+        activeBanner.style.display = 'none';
+      } else {
+        if (activeRunIdx >= taskList.length) {
+          tasksRunning = false;
+          tasksLastTime = null;
+          activeRunIdx = 0;
+          taskList.forEach(t => t.timeLeftMs = t.durationMs);
+        }
+        
+        if(document.activeElement && document.activeElement.classList.contains('task-name-input')) {
+            document.activeElement.blur();
+        }
+
+        tasksRunning = true;
+        tasksLastTime = Date.now();
+        btn.innerText = 'Pause';
+        btn.classList.replace('btn-start', 'btn-pause');
+        configStrip.style.display = 'none'; 
+        templatesStrip.style.display = 'none';
+        activeBanner.style.display = 'flex';
+        updateTasksBanner(); 
+      }
+      checkWorkerActivity();
+      renderTasksUI();
+    }
+
+    function tickTasks(now) {
+      if (!tasksLastTime) tasksLastTime = now;
+      const delta = now - tasksLastTime;
+      tasksLastTime = now;
+      
+      let t = taskList[activeRunIdx];
+      t.timeLeftMs -= delta;
+
+      if (t.timeLeftMs <= 0) {
+        t.timeLeftMs = 0;
+        activeRunIdx++;
+        
+        if (activeRunIdx >= taskList.length) {
+           tasksRunning = false;
+           tasksLastTime = null;
+           renderTasksUI();
+           checkWorkerActivity();
+           playAlertChime();
+           
+           const btn = document.getElementById('tasks-start');
+           btn.innerText = 'Start';
+           btn.classList.replace('btn-pause', 'btn-start');
+           
+           document.getElementById('tasks-config-strip').style.display = 'flex'; 
+           document.getElementById('tasks-templates-strip').style.display = 'flex'; 
+           document.getElementById('tasks-active-banner').style.display = 'none'; 
+        } else {
+           playSoundHarp(); 
+           updateTasksBanner(); 
+           renderTasksUI();
+        }
+      } else {
+        renderTasksUI();
+      }
+    }
+
+    function resetTasks() {
+      const now = Date.now();
+      const isDoubleReset = (now - lastTasksResetTime < 5000);
+      lastTasksResetTime = now;
+
+      tasksRunning = false;
+      tasksLastTime = null;
+      activeRunIdx = 0;
+
+      if (isDoubleReset) {
+        taskList = [{ durationMs: 300000, timeLeftMs: 300000, name: '' }];
+        selectedTaskIdx = 0;
+        document.getElementById('task-count-val').innerText = '1';
+      } else {
+        taskList.forEach(t => t.timeLeftMs = t.durationMs);
+      }
+
+      checkWorkerActivity();
+      renderTasksUI();
+      
+      const btn = document.getElementById('tasks-start');
+      btn.innerText = 'Start';
+      btn.classList.replace('btn-pause', 'btn-start');
+      
+      document.getElementById('tasks-config-strip').style.display = 'flex'; 
+      document.getElementById('tasks-templates-strip').style.display = 'flex'; 
+      document.getElementById('tasks-active-banner').style.display = 'none'; 
+    }
+
+    /* 3. Turn Timer */
     let totalTurns = 4;
     let currentTurn = 1, turnDurationMs = 60000, turnTimeLeftMs = 60000;
     let turnRunning = false, turnLastTime = null;
@@ -1669,7 +2155,6 @@
       const text = formatTime(turnTimeLeftMs, msState.turn);
       const digits = document.getElementById('turn-digits');
       digits.innerText = text;
-      // Scale dynamically based on character count
       digits.style.setProperty('--char-count', text.length);
       
       const progress = (turnTimeLeftMs / turnDurationMs) * 100;
@@ -1765,7 +2250,7 @@
       btn.classList.replace('btn-pause', 'btn-start');
     }
 
-    /* 3. Visual Timer */
+    /* 4. Visual Timer */
     let visDurationMs = 180000, visTimeLeftMs = 180000;
     let visRunning = false, visLastTime = null;
 
@@ -1797,7 +2282,6 @@
       const text = formatTime(visTimeLeftMs, msState.vis);
       const visTime = document.getElementById('visual-time');
       visTime.innerText = text;
-      // Scale dynamically based on character count
       visTime.style.setProperty('--char-count', text.length);
     }
     
@@ -1870,6 +2354,7 @@
         if (cdRunning) updateCdDisplay();
         if (turnRunning) updateTurnUI();
         if (visRunning) updateVisualUI();
+        if (tasksRunning) renderTasksUI();
       }
     });
 
@@ -1891,13 +2376,13 @@
     createPresetButtons('cd-presets', loadCountdownPreset);
     createPresetButtons('turn-presets', loadTurnPreset);
     createPresetButtons('vis-presets', loadVisualPreset);
+    createPresetButtons('tasks-presets', loadTasksPreset);
 
-    // Initial updates to pass the initial character count to CSS
     updateCdDisplay();
     updateTurnUI();
     updateVisualUI();
+    renderTasksUI();
     
-    // Switch to the correct timer (vital for embed mode)
     switchTimer(startupTimer);
   </script>
 </body>

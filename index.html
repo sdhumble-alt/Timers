@@ -551,6 +551,68 @@
       cursor: default;
     }
 
+    /* Task Menu & Instructions */
+    .task-menu-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 0 0.4rem;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .task-menu-btn:hover:not(:disabled) {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .task-menu-btn:disabled {
+      opacity: 0.3;
+      cursor: default;
+    }
+
+    .instruction-input-area {
+      width: 100%;
+      min-height: 120px;
+      background: var(--bg-input);
+      border: 2px solid var(--border-color);
+      color: var(--text-main);
+      border-radius: 12px;
+      padding: 1rem;
+      font-family: inherit;
+      font-size: 1rem;
+      resize: vertical;
+    }
+
+    .instruction-input-area:focus {
+      border-color: var(--primary);
+      outline: none;
+    }
+
+    .modal-save-btn {
+      background-color: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 0.85rem 1.5rem;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 1rem;
+      width: 100%;
+      transition: filter 0.2s;
+    }
+
+    .modal-save-btn:hover {
+      filter: brightness(1.1);
+    }
+
     .task-bar-wrap {
       flex: 1;
       height: 20px;
@@ -634,6 +696,7 @@
       justify-content: center;
       gap: 1.5rem;
       flex-shrink: 0;
+      width: 100%;
     }
 
     .turn-selector-card {
@@ -678,11 +741,30 @@
     .active-task-display {
       font-size: 3.2rem !important;
       padding: 0 1rem;
-      text-transform: uppercase;
+      /* Casing respects user input rather than forced uppercase */
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 450px;
+      max-width: 350px;
+    }
+
+    /* Dynamic Instruction Text Scaling */
+    .instruction-display-card {
+      padding: 0.5rem 1rem !important;
+      height: 100%;
+      min-height: 90px;
+      container-type: size;
+      overflow: hidden;
+    }
+
+    .instruction-scale-text {
+      font-size: min(calc(90cqw / (var(--char-count, 10) * 0.55)), 70cqh);
+      font-weight: 800;
+      /* Casing respects user input rather than forced uppercase */
+      color: var(--text-main);
+      text-align: center;
+      line-height: 1;
+      white-space: nowrap;
     }
 
     .turn-selector-stepper {
@@ -1115,17 +1197,21 @@
       </div>
 
       <div class="setting-group">
-        <button class="modal-trigger-btn" onclick="copyEmbedCode(this)">
-          <span>Copy Embed Code</span>
+        <button class="modal-trigger-btn" onclick="copyShareLink(this)">
+          <span>Copy Link</span>
           <span class="modal-trigger-val">🔗</span>
         </button>
-        <div style="font-size: 0.75rem; color: var(--text-muted); opacity: 0.8; text-align: center; margin-top: -0.2rem; line-height: 1.3;">
-          Saves your current timer, theme, and chime setting.
+        <button class="modal-trigger-btn" onclick="copyEmbedCode(this)">
+          <span>Copy Embed Code</span>
+          <span class="modal-trigger-val">📄</span>
+        </button>
+        <div style="font-size: 0.75rem; color: var(--text-muted); opacity: 0.8; text-align: center; margin-top: 0.2rem; line-height: 1.3;">
+          Saves your current timer and settings to reopen the app with or embed
         </div>
       </div>
 
       <div class="app-meta-footer">
-        <span>V1.2.0 (10-04-2026)</span>
+        <span>V1.2.4 (10-10-2026)</span>
       </div>
     </div>
   </nav>
@@ -1200,13 +1286,21 @@
       </div>
 
       <!-- Active Running Banner (Visible when running) -->
-      <div class="turn-config-strip" id="tasks-active-banner" style="display: none;">
-        <div class="turn-selector-card" style="padding: 0.6rem 2.5rem;">
+      <div class="turn-config-strip" id="tasks-active-banner" style="display: none; width: 100%; max-width: 1000px; padding: 0 1rem;">
+        
+        <!-- Turn Name Box -->
+        <div class="turn-selector-card" style="padding: 0.6rem 2.5rem; flex-shrink: 0; min-height: 90px;">
           <div class="turn-selector-info">
             <span class="turn-selector-label">Turn</span>
             <span class="turn-selector-count active-task-display" id="active-task-display">1</span>
           </div>
         </div>
+
+        <!-- Instruction Scaling Box -->
+        <div class="turn-selector-card instruction-display-card" id="instruction-display-card" style="display: none; flex: 1; align-items: center; justify-content: center;">
+            <div class="instruction-scale-text" id="active-instruction-display" style="--char-count: 10;"></div>
+        </div>
+
       </div>
       
       <!-- Layout Wrapper for Task View -> Sidebar + Display Box -->
@@ -1353,6 +1447,21 @@
     </div>
   </div>
 
+  <!-- Instruction Modal Overlay -->
+  <div class="modal-backdrop" id="instruction-modal" onclick="closeModalOnBackdrop(event, 'instruction-modal')">
+    <div class="modal-dialog" style="max-width: 500px;">
+      <div class="modal-header">
+        <div class="modal-title">Task Instructions</div>
+        <button class="modal-close-btn" onclick="closeModal('instruction-modal')">✕</button>
+      </div>
+      <div class="modal-body" style="display: flex; flex-direction: column;">
+        <textarea id="task-instruction-text" class="instruction-input-area" placeholder="Enter instructions to display during this task..."></textarea>
+        <input type="hidden" id="current-instruction-idx">
+        <button class="modal-save-btn" onclick="saveTaskInstruction()">Save Instructions</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     /* Web Worker Heartbeat */
     const workerBlob = new Blob([`
@@ -1412,31 +1521,32 @@
     let visualMode = localStorage.getItem('timer_visual_mode') ?? 'pie';
 
     let taskList = [
-      { durationMs: 300000, timeLeftMs: 300000, name: '' }
+      { durationMs: 300000, timeLeftMs: 300000, name: '', instruction: '' }
     ];
 
-    // --- URL Parsing for Embeds ---
+    // --- URL Parsing for Share/Embeds ---
     const urlParams = new URLSearchParams(window.location.search);
     const isEmbedded = urlParams.get('embed') === 'true';
-    let startupTimer = 'countdown';
+    let startupTimer = urlParams.get('type') || 'countdown';
 
     if (isEmbedded) {
       document.body.classList.add('is-embedded');
-      if (urlParams.get('theme')) currentTheme = urlParams.get('theme');
-      if (urlParams.get('chime')) currentChime = urlParams.get('chime');
-      if (urlParams.get('type')) startupTimer = urlParams.get('type');
-      if (urlParams.get('vismode')) visualMode = urlParams.get('vismode');
-      
-      // Load Custom Task Data if available
-      if (urlParams.get('tc')) {
-        const count = parseInt(urlParams.get('tc'), 10);
-        taskList = [];
-        for (let i = 0; i < count; i++) {
-          const d = parseInt(urlParams.get(`td${i}`), 10) || 300000;
-          const n = urlParams.get(`tn${i}`) || '';
-          taskList.push({ durationMs: d, timeLeftMs: d, name: n });
-        }
-        document.getElementById('task-count-val').innerText = taskList.length;
+    }
+
+    // Apply settings if present in URL
+    if (urlParams.get('theme')) currentTheme = urlParams.get('theme');
+    if (urlParams.get('chime')) currentChime = urlParams.get('chime');
+    if (urlParams.get('vismode')) visualMode = urlParams.get('vismode');
+    
+    // Load Custom Task Data if available
+    if (urlParams.get('tc')) {
+      const count = parseInt(urlParams.get('tc'), 10);
+      taskList = [];
+      for (let i = 0; i < count; i++) {
+        const d = parseInt(urlParams.get(`td${i}`), 10) || 300000;
+        const n = urlParams.get(`tn${i}`) || '';
+        const inst = urlParams.get(`ti${i}`) || '';
+        taskList.push({ durationMs: d, timeLeftMs: d, name: n, instruction: inst });
       }
     }
 
@@ -1452,30 +1562,48 @@
       localStorage.setItem('timer_volume', currentVolume.toString());
     }
 
-    /* Embed Code Generator */
-    function copyEmbedCode(btnEl) {
+    /* URL Generator */
+    function generateShareUrl(forEmbed) {
       let activeType = 'countdown';
       if (document.getElementById('view-turn').classList.contains('active')) activeType = 'turn';
       if (document.getElementById('view-visual').classList.contains('active')) activeType = 'visual';
       if (document.getElementById('view-tasks').classList.contains('active')) activeType = 'tasks';
 
-      const baseUrl = "https://timers.humblescience.org";
-      let src = `${baseUrl}/?embed=true&type=${activeType}&theme=${currentTheme}&chime=${currentChime}`;
+      const baseUrl = "https://timers.humblescience.org/";
+      let url = new URL(baseUrl);
       
+      if (forEmbed) url.searchParams.set('embed', 'true');
+      url.searchParams.set('type', activeType);
+      url.searchParams.set('theme', currentTheme);
+      url.searchParams.set('chime', currentChime);
+
       if (activeType === 'visual') {
-        src += `&vismode=${visualMode}`;
+        url.searchParams.set('vismode', visualMode);
       }
 
       if (activeType === 'tasks') {
-        src += `&tc=${taskList.length}`;
+        url.searchParams.set('tc', taskList.length);
         taskList.forEach((t, i) => {
-          src += `&td${i}=${t.durationMs}`;
-          if (t.name) {
-            src += `&tn${i}=${encodeURIComponent(t.name)}`;
-          }
+          url.searchParams.set(`td${i}`, t.durationMs);
+          if (t.name) url.searchParams.set(`tn${i}`, t.name);
+          if (t.instruction) url.searchParams.set(`ti${i}`, t.instruction);
         });
       }
 
+      return url.toString();
+    }
+
+    function copyShareLink(btnEl) {
+      const url = generateShareUrl(false);
+      navigator.clipboard.writeText(url).then(() => {
+        const originalText = btnEl.innerHTML;
+        btnEl.innerHTML = `<span>Copied!</span><span class="modal-trigger-val">✓</span>`;
+        setTimeout(() => { btnEl.innerHTML = originalText; }, 2000);
+      });
+    }
+
+    function copyEmbedCode(btnEl) {
+      const src = generateShareUrl(true);
       const iframe = `<iframe src="${src}" width="100%" height="400px" style="border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"></iframe>`;
 
       navigator.clipboard.writeText(iframe).then(() => {
@@ -1931,6 +2059,9 @@
     let lastTasksResetTime = 0;
 
     function renderTasksUI() {
+      if (document.getElementById('task-count-val')) {
+        document.getElementById('task-count-val').innerText = taskList.length;
+      }
       const container = document.getElementById('task-list-container');
       container.innerHTML = '';
       
@@ -1947,6 +2078,7 @@
           <div class="task-name-group">
             <span class="task-name">${i + 1}</span>
             <input type="text" class="task-name-input" id="task-input-${i}" value="${escapeHTML(task.name)}" maxlength="10" onclick="event.stopPropagation()" onchange="saveTaskName(${i}, this.value)" onkeyup="if(event.key==='Enter') this.blur()" ${tasksRunning ? 'disabled' : ''}>
+            <button class="task-menu-btn" onclick="openInstructionModal(${i}); event.stopPropagation();" ${tasksRunning ? 'disabled' : ''}>⋮</button>
           </div>
           <div class="task-bar-wrap">
             <div class="task-bar-fill" style="width: ${progressPercent}%"></div>
@@ -1960,8 +2092,39 @@
     function updateTasksBanner() {
       if (!tasksRunning) return;
       const t = taskList[activeRunIdx];
-      const displayVal = t.name && t.name.trim() !== '' ? t.name.trim() : (activeRunIdx + 1);
-      document.getElementById('active-task-display').innerText = displayVal;
+      
+      const nameVal = t.name && t.name.trim() !== '' ? t.name.trim() : `Task ${activeRunIdx + 1}`;
+      document.getElementById('active-task-display').innerText = nameVal;
+
+      const instCard = document.getElementById('instruction-display-card');
+      const instDisplay = document.getElementById('active-instruction-display');
+      
+      if (t.instruction && t.instruction.trim() !== '') {
+        const text = t.instruction.trim();
+        instDisplay.innerText = text;
+        instDisplay.style.setProperty('--char-count', Math.max(text.length, 5));
+        instCard.style.display = 'flex';
+      } else {
+        instCard.style.display = 'none';
+      }
+    }
+
+    function openInstructionModal(idx) {
+      if (tasksRunning) return;
+      const task = taskList[idx];
+      document.getElementById('task-instruction-text').value = task.instruction || '';
+      document.getElementById('current-instruction-idx').value = idx;
+      document.getElementById('instruction-modal').classList.add('open');
+    }
+
+    function saveTaskInstruction() {
+      const idx = document.getElementById('current-instruction-idx').value;
+      const text = document.getElementById('task-instruction-text').value;
+      if (idx !== '') {
+        taskList[idx].instruction = text.trim();
+        updateTasksBanner();
+      }
+      closeModal('instruction-modal');
     }
 
     function applySequenceTemplate(type, multiplier) {
@@ -1974,18 +2137,17 @@
         const total = multiplier * 2;
         for (let i = 0; i < total; i++) {
           const name = i % 2 === 0 ? "Partner A" : "Partner B";
-          taskList.push({ durationMs: currentDur, timeLeftMs: currentDur, name: name });
+          taskList.push({ durationMs: currentDur, timeLeftMs: currentDur, name: name, instruction: '' });
         }
       } else if (type === 'seats') {
         const total = multiplier;
         for (let i = 0; i < total; i++) {
-          taskList.push({ durationMs: currentDur, timeLeftMs: currentDur, name: `Seat ${i+1}` });
+          taskList.push({ durationMs: currentDur, timeLeftMs: currentDur, name: `Seat ${i+1}`, instruction: '' });
         }
       }
       
       selectedTaskIdx = 0;
       activeRunIdx = 0;
-      document.getElementById('task-count-val').innerText = taskList.length;
       renderTasksUI();
     }
 
@@ -1997,7 +2159,7 @@
       
       while (taskList.length < newCount) {
          const lastDur = taskList[taskList.length - 1].durationMs;
-         taskList.push({ durationMs: lastDur, timeLeftMs: lastDur, name: '' });
+         taskList.push({ durationMs: lastDur, timeLeftMs: lastDur, name: '', instruction: '' });
       }
       while (taskList.length > newCount) {
          taskList.pop();
@@ -2005,7 +2167,6 @@
       if (selectedTaskIdx >= taskList.length) selectedTaskIdx = taskList.length - 1;
       if (activeRunIdx >= taskList.length) activeRunIdx = 0;
       
-      document.getElementById('task-count-val').innerText = taskList.length;
       renderTasksUI();
     }
 
@@ -2123,9 +2284,8 @@
       activeRunIdx = 0;
 
       if (isDoubleReset) {
-        taskList = [{ durationMs: 300000, timeLeftMs: 300000, name: '' }];
+        taskList = [{ durationMs: 300000, timeLeftMs: 300000, name: '', instruction: '' }];
         selectedTaskIdx = 0;
-        document.getElementById('task-count-val').innerText = '1';
       } else {
         taskList.forEach(t => t.timeLeftMs = t.durationMs);
       }

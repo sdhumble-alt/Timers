@@ -283,16 +283,6 @@
       gap: 0.4rem;
     }
 
-    .setting-label {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      font-weight: 800;
-      color: var(--text-muted);
-      display: flex;
-      justify-content: space-between;
-      letter-spacing: 0.05em;
-    }
-
     .modal-trigger-btn {
       background-color: var(--bg-input);
       border: 2px solid var(--border-color);
@@ -328,6 +318,38 @@
       overflow: hidden;
       text-overflow: ellipsis;
       max-width: 110px;
+    }
+
+    /* Bookmark Popover Notification */
+    .bookmark-popover {
+      display: none;
+      background-color: var(--bg-main);
+      border: 2px solid var(--accent);
+      border-radius: 14px;
+      padding: 0.85rem;
+      color: var(--text-main);
+      font-size: 0.82rem;
+      line-height: 1.4;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+      animation: popoverFade 0.2s ease forwards;
+      margin-bottom: 0.4rem;
+    }
+
+    .bookmark-popover kbd {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 2px 7px;
+      font-family: inherit;
+      font-weight: 800;
+      color: var(--primary);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    @keyframes popoverFade {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .volume-slider {
@@ -1179,11 +1201,13 @@
         <input type="range" class="volume-slider" id="vol-slider" min="0" max="100" value="80" oninput="updateVolume(this.value)">
       </div>
 
-      <div class="setting-group">
-        <button class="modal-trigger-btn" onclick="bookmarkTimer(this)">
+      <div class="setting-group" style="position: relative;">
+        <button class="modal-trigger-btn" id="bookmark-btn" onclick="bookmarkTimer(this)">
           <span>Bookmark This Timer</span>
           <span class="modal-trigger-val">⭐</span>
         </button>
+        <div class="bookmark-popover" id="bookmark-popover"></div>
+
         <button class="modal-trigger-btn" onclick="copyShareLink(this)">
           <span>Copy Link</span>
           <span class="modal-trigger-val">🔗</span>
@@ -1576,11 +1600,54 @@
       return url.toString();
     }
     
+    let popoverTimeout = null;
+
+    function getBookmarkInstructions() {
+      const ua = navigator.userAgent;
+      const isMac = /Macintosh|Mac OS X/i.test(ua);
+      const isIOS = /iPhone|iPad|iPod/i.test(ua);
+      const isAndroid = /Android/i.test(ua);
+      const isSafari = /^((?!chrome|android).)*safari/i.test(ua);
+
+      if (isIOS) {
+        return 'Tap the <strong>Share</strong> button (⎋), then tap <strong>Add to Favorites / Bookmark</strong>.';
+      }
+      if (isAndroid) {
+        return 'Tap the <strong>⋮ Menu</strong> icon in your browser, then tap the <strong>⭐ Star</strong>.';
+      }
+      if (isMac) {
+        if (isSafari) {
+          return 'Press <kbd>⌘ Cmd</kbd> + <kbd>D</kbd> to add this timer to your Safari Bookmarks.';
+        }
+        return 'Press <kbd>⌘ Cmd</kbd> + <kbd>D</kbd> to save this timer setup to your Bookmarks.';
+      }
+      return 'Press <kbd>Ctrl</kbd> + <kbd>D</kbd> to save this timer setup to your Bookmarks.';
+    }
+
     function bookmarkTimer(btnEl) {
       const url = generateShareUrl(false);
       window.history.replaceState(null, '', url);
-      alert('Press Ctrl+D (Windows) or Cmd+D (Mac) to bookmark this timer setup!');
+
+      const popover = document.getElementById('bookmark-popover');
+      popover.innerHTML = getBookmarkInstructions();
+      popover.style.display = 'block';
+
+      if (popoverTimeout) clearTimeout(popoverTimeout);
+      popoverTimeout = setTimeout(() => {
+        popover.style.display = 'none';
+      }, 5000);
     }
+
+    // Dismiss popover when clicking anywhere else
+    document.addEventListener('click', (e) => {
+      const popover = document.getElementById('bookmark-popover');
+      const btn = document.getElementById('bookmark-btn');
+      if (popover && popover.style.display === 'block') {
+        if (!popover.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
+          popover.style.display = 'none';
+        }
+      }
+    });
 
     function copyShareLink(btnEl) {
       const url = generateShareUrl(false);

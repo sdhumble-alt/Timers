@@ -1222,7 +1222,7 @@
       </div>
 
       <div class="app-meta-footer">
-        <span>V1.3.0 (10-12-2026)</span>
+        <span>V1.3.1 (10-12-2026)</span>
       </div>
     </div>
   </nav>
@@ -1274,6 +1274,13 @@
           <div class="turn-selector-stepper">
             <button class="turn-stepper-btn" onclick="adjustTaskCount(1)">▲</button>
             <button class="turn-stepper-btn" onclick="adjustTaskCount(-1)">▼</button>
+          </div>
+        </div>
+
+        <div class="turn-selector-card" style="padding: 0.45rem 1rem;">
+          <div class="turn-selector-info">
+            <span class="turn-selector-label">Apply Time To</span>
+            <button class="toggle-pill-btn active" id="task-time-mode-toggle" onclick="toggleTaskTimeMode()" style="height: 32px; min-width: 100px; font-size: 0.85rem; padding: 0 1rem; margin-top: 0.4rem;">All Tasks</button>
           </div>
         </div>
 
@@ -1526,6 +1533,7 @@
     let currentChime = localStorage.getItem('timer_chime') ?? 'bell';
     let currentTheme = localStorage.getItem('timer_theme') ?? 'default';
     let visualMode = localStorage.getItem('timer_visual_mode') ?? 'pie';
+    let taskTimeMode = 'all';
 
     let taskList = [
       { durationMs: 300000, timeLeftMs: 300000, name: '', instruction: '' }
@@ -2219,6 +2227,19 @@
       renderTasksUI();
     }
 
+    function toggleTaskTimeMode() {
+      const btn = document.getElementById('task-time-mode-toggle');
+      if (taskTimeMode === 'all') {
+        taskTimeMode = 'selected';
+        btn.innerText = 'Selected Task';
+        btn.classList.remove('active');
+      } else {
+        taskTimeMode = 'all';
+        btn.innerText = 'All Tasks';
+        btn.classList.add('active');
+      }
+    }
+
     function adjustTaskCount(delta) {
       if (tasksRunning) return;
       let newCount = taskList.length + delta;
@@ -2250,19 +2271,34 @@
 
     function adjustSelectedTask(deltaSec) {
       if (tasksRunning) return;
-      const t = taskList[selectedTaskIdx];
-      t.durationMs = Math.max(5000, t.durationMs + deltaSec * 1000);
-      t.timeLeftMs = t.durationMs;
+      
+      if (taskTimeMode === 'all') {
+        taskList.forEach(t => {
+          t.durationMs = Math.max(5000, t.durationMs + deltaSec * 1000);
+          t.timeLeftMs = t.durationMs;
+        });
+      } else {
+        const t = taskList[selectedTaskIdx];
+        t.durationMs = Math.max(5000, t.durationMs + deltaSec * 1000);
+        t.timeLeftMs = t.durationMs;
+      }
+      
       renderTasksUI();
     }
 
     function loadTasksPreset(sec) {
       if (tasksRunning) toggleTasks();
       
-      taskList.forEach(t => {
+      if (taskTimeMode === 'all') {
+        taskList.forEach(t => {
+          t.durationMs = sec * 1000;
+          t.timeLeftMs = t.durationMs;
+        });
+      } else {
+        const t = taskList[selectedTaskIdx];
         t.durationMs = sec * 1000;
         t.timeLeftMs = t.durationMs;
-      });
+      }
       
       renderTasksUI();
     }

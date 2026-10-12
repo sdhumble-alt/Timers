@@ -308,6 +308,7 @@
       justify-content: space-between;
       text-align: left;
       gap: 0.5rem;
+      margin-bottom: 0.2rem;
     }
 
     .modal-trigger-btn:hover {
@@ -738,33 +739,15 @@
       width: 100%;
     }
 
-    .active-task-display {
-      font-size: 3.2rem !important;
-      padding: 0 1rem;
-      /* Casing respects user input rather than forced uppercase */
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 350px;
-    }
-
     /* Dynamic Instruction Text Scaling */
-    .instruction-display-card {
-      padding: 0.5rem 1rem !important;
-      height: 100%;
-      min-height: 90px;
-      container-type: size;
-      overflow: hidden;
-    }
-
     .instruction-scale-text {
-      font-size: min(calc(90cqw / (var(--char-count, 10) * 0.55)), 70cqh);
+      font-size: clamp(1.5rem, 6cqw, 4rem);
       font-weight: 800;
-      /* Casing respects user input rather than forced uppercase */
       color: var(--text-main);
       text-align: center;
-      line-height: 1;
-      white-space: nowrap;
+      line-height: 1.3;
+      white-space: pre-wrap;
+      word-break: break-word;
     }
 
     .turn-selector-stepper {
@@ -1197,6 +1180,10 @@
       </div>
 
       <div class="setting-group">
+        <button class="modal-trigger-btn" onclick="bookmarkTimer(this)">
+          <span>Bookmark This Timer</span>
+          <span class="modal-trigger-val">⭐</span>
+        </button>
         <button class="modal-trigger-btn" onclick="copyShareLink(this)">
           <span>Copy Link</span>
           <span class="modal-trigger-val">🔗</span>
@@ -1211,7 +1198,7 @@
       </div>
 
       <div class="app-meta-footer">
-        <span>V1.2.4 (10-10-2026)</span>
+        <span>V1.3.0 (10-12-2026)</span>
       </div>
     </div>
   </nav>
@@ -1285,25 +1272,21 @@
         </div>
       </div>
 
-      <!-- Active Running Banner (Visible when running) -->
-      <div class="turn-config-strip" id="tasks-active-banner" style="display: none; width: 100%; max-width: 1000px; padding: 0 1rem;">
-        
-        <!-- Turn Name Box -->
-        <div class="turn-selector-card" style="padding: 0.6rem 2.5rem; flex-shrink: 0; min-height: 90px;">
-          <div class="turn-selector-info">
-            <span class="turn-selector-label">Turn</span>
-            <span class="turn-selector-count active-task-display" id="active-task-display">1</span>
+      <!-- Focus View (Visible when running WITH instructions) -->
+      <div class="display-box" id="tasks-focus-view" style="display: none; flex: 1; flex-direction: column; width: 100%; padding: 1.5rem;">
+        <div class="turn-selector-card" style="margin-bottom: 1rem; padding: 0.5rem 3rem;">
+          <div class="turn-selector-count active-task-display" id="focus-task-name" style="font-size: 2.5rem; margin: 0; flex-shrink: 0;"></div>
+        </div>
+        <div class="instruction-scale-text" id="focus-task-instruction" style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 1rem; width: 100%; overflow-y: auto;"></div>
+        <div style="width: 100%; max-width: 850px; flex-shrink: 0; display: flex; flex-direction: column; gap: 0.5rem; align-items: center;">
+          <div class="progress-track" style="width: 100%; margin-top: 0; border-radius: 12px; height: 24px;">
+            <div class="progress-fill" id="focus-task-progress" style="background: var(--success); width: 100%;"></div>
           </div>
+          <div class="timer-digits" id="focus-task-time" style="font-size: 4rem;"></div>
         </div>
-
-        <!-- Instruction Scaling Box -->
-        <div class="turn-selector-card instruction-display-card" id="instruction-display-card" style="display: none; flex: 1; align-items: center; justify-content: center;">
-            <div class="instruction-scale-text" id="active-instruction-display" style="--char-count: 10;"></div>
-        </div>
-
       </div>
       
-      <!-- Layout Wrapper for Task View -> Sidebar + Display Box -->
+      <!-- Layout Wrapper for Task View (Hidden when focus view is active) -->
       <div class="task-layout-wrapper">
         <div class="vertical-templates" id="tasks-templates-strip">
            <span class="template-label">PARTNERS</span>
@@ -1591,6 +1574,12 @@
       }
 
       return url.toString();
+    }
+    
+    function bookmarkTimer(btnEl) {
+      const url = generateShareUrl(false);
+      window.history.replaceState(null, '', url);
+      alert('Press Ctrl+D (Windows) or Cmd+D (Mac) to bookmark this timer setup!');
     }
 
     function copyShareLink(btnEl) {
@@ -2087,25 +2076,37 @@
         `;
         container.appendChild(div);
       });
+      
+      // Update Focus View if running
+      if (tasksRunning) {
+        const t = taskList[activeRunIdx];
+        if (t.instruction && t.instruction.trim() !== '') {
+          const progressRatio = Math.max(0, Math.min(1, t.timeLeftMs / t.durationMs));
+          const progressPercent = progressRatio * 100;
+          document.getElementById('focus-task-progress').style.width = `${progressPercent}%`;
+          document.getElementById('focus-task-time').innerText = formatTime(t.timeLeftMs, msState.tasks);
+        }
+      }
     }
 
     function updateTasksBanner() {
       if (!tasksRunning) return;
       const t = taskList[activeRunIdx];
+      const hasInstruction = t.instruction && t.instruction.trim() !== '';
       
-      const nameVal = t.name && t.name.trim() !== '' ? t.name.trim() : `Task ${activeRunIdx + 1}`;
-      document.getElementById('active-task-display').innerText = nameVal;
-
-      const instCard = document.getElementById('instruction-display-card');
-      const instDisplay = document.getElementById('active-instruction-display');
+      const layoutWrapper = document.querySelector('#view-tasks .task-layout-wrapper');
+      const focusView = document.getElementById('tasks-focus-view');
       
-      if (t.instruction && t.instruction.trim() !== '') {
-        const text = t.instruction.trim();
-        instDisplay.innerText = text;
-        instDisplay.style.setProperty('--char-count', Math.max(text.length, 5));
-        instCard.style.display = 'flex';
+      if (hasInstruction) {
+        layoutWrapper.style.display = 'none';
+        focusView.style.display = 'flex';
+        
+        const nameVal = t.name && t.name.trim() !== '' ? t.name.trim() : `Task ${activeRunIdx + 1}`;
+        document.getElementById('focus-task-name').innerText = nameVal;
+        document.getElementById('focus-task-instruction').innerText = t.instruction.trim();
       } else {
-        instCard.style.display = 'none';
+        layoutWrapper.style.display = 'flex';
+        focusView.style.display = 'none';
       }
     }
 
@@ -2203,16 +2204,17 @@
       const btn = document.getElementById('tasks-start');
       const configStrip = document.getElementById('tasks-config-strip');
       const templatesStrip = document.getElementById('tasks-templates-strip');
-      const activeBanner = document.getElementById('tasks-active-banner');
 
       if (tasksRunning) {
         tasksRunning = false;
         tasksLastTime = null;
         btn.innerText = 'Resume';
         btn.classList.replace('btn-pause', 'btn-start');
+        
         configStrip.style.display = 'flex'; 
         templatesStrip.style.display = 'flex';
-        activeBanner.style.display = 'none';
+        document.getElementById('tasks-focus-view').style.display = 'none';
+        document.querySelector('#view-tasks .task-layout-wrapper').style.display = 'flex';
       } else {
         if (activeRunIdx >= taskList.length) {
           tasksRunning = false;
@@ -2229,9 +2231,9 @@
         tasksLastTime = Date.now();
         btn.innerText = 'Pause';
         btn.classList.replace('btn-start', 'btn-pause');
+        
         configStrip.style.display = 'none'; 
         templatesStrip.style.display = 'none';
-        activeBanner.style.display = 'flex';
         updateTasksBanner(); 
       }
       checkWorkerActivity();
@@ -2263,7 +2265,8 @@
            
            document.getElementById('tasks-config-strip').style.display = 'flex'; 
            document.getElementById('tasks-templates-strip').style.display = 'flex'; 
-           document.getElementById('tasks-active-banner').style.display = 'none'; 
+           document.getElementById('tasks-focus-view').style.display = 'none';
+           document.querySelector('#view-tasks .task-layout-wrapper').style.display = 'flex';
         } else {
            playSoundHarp(); 
            updateTasksBanner(); 
@@ -2299,7 +2302,8 @@
       
       document.getElementById('tasks-config-strip').style.display = 'flex'; 
       document.getElementById('tasks-templates-strip').style.display = 'flex'; 
-      document.getElementById('tasks-active-banner').style.display = 'none'; 
+      document.getElementById('tasks-focus-view').style.display = 'none';
+      document.querySelector('#view-tasks .task-layout-wrapper').style.display = 'flex';
     }
 
     /* 3. Turn Timer */
